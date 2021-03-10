@@ -17,6 +17,7 @@ attach(viscosity)
 
 yHat <- round(mean(Readings),4)
 yHat
+# just a comment
 
 ```
 

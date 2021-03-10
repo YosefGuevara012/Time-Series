@@ -1806,33 +1806,17 @@ summary {
 viscosity &lt;- read.csv(&quot;viscosity.csv&quot;, header= T, sep=&quot;;&quot;)
 head(viscosity)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6NiwibmNvbCI6Mn0sInJkZiI6Ikg0c0lBQUFBQUFBQUJndHlpVERtaXVCaVlHQmdabUFCWW1aV0lKT0J6VG5BME1qVWlJR0JoUW5JWXdUS2NJTG9DcUFxWVNBREpNZ0xVZ2FXaFBDWmdaZ0ZpRm1oNG53ZzJpRjBmZVd5cmR6OERxRWhSUnNVanN4eENOVVh5cHZlRytBUTZpN2Z4Y2wwenlIVXM4V1gwV3F5UTZoY2Y0ekcxOE5vRnJMbUplYW1GZ01aQW1CTElJTGNJWm01cVhvQnFVV1orU2xRSVk2ZzFNU1V6THowWWpUOW5FWDU1WG93TTBBT1ptcGdBQU0yZEl1U2N4S0xZUmJCQkxsU0Vrc1M5ZEtLZ1BxQnZIOW9XdGp6QzBveTgvT0FtcGlFb2Q1RzFzeFloQ1lnVUpvSGNrbUtibkpHYVY2MnJxRWh5QVpvK0RGQ25jY0lEVHNZbXdsaUo5Ti9xRm1zVUxQWVV2UFNNL05TWVk3UFNVeEt6WUZ5K0lCZUJ2dFlyNkFvTTY4RTVoV2dhTEZlU1g1Sklrd2RWM0orRGt3RTdEbUdmd0JKd0x5Y0N3SUFBQT09In0= -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6NiwibmNvbCI6Mn0sInJkZiI6Ikg0c0lBQUFBQUFBQUJndHlpVERtaXVCaVlHQmdabUFCWW1aV0lKT0J6VG5BME1qVWlJR0JoUW5JWXdUS2NJTG9DcUFxWVNBREpNZ0xVZ2FXaFBDWmdaZ0ZpRm1oNG53ZzJpRjBmZVd5cmR6OERxRWhSUnNVanN4eENOVVh5cHZlRytBUTZpN2Z4Y2wwenlIVXM4V1gwV3F5UTZoY2Y0ekcxOE5vRnJMbUplYW1GZ01aQW1CTElJTGNJWm01cVhvQnFVV1orU2xRSVk2ZzFNU1V6THowWWpUOW5FWDU1WG93TTBBT1ptcGdBQU0yZEl1U2N4S0xZUmJCQkxsU0Vrc1M5ZEtLZ1BxQnZIOW9XdGp6QzBveTgvT0FtcGlFb2Q1RzFzeFloQ2JBWDVvSGNrbUtibkpHYVY2MnJpSElBbWp3TVVKZHh3Z05PaGliQ1dJbDAzK29VYXhRbzloUzg5SXo4MUpoYnM5SlRFck5nWEw0Z0Q0R2UxaXZvQ2d6cndUbUU2Qm9zVjVKZmtraVRCMVhjbjRPVEFUc040Wi9BRTFtNmRNS0FnQUEifQ== -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Time.Period"],"name":[1],"type":["int"],"align":["right"]},{"label":["Readings"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"86.7418","_rn_":"1"},{"1":"2","2":"85.3195","_rn_":"2"},{"1":"3","2":"84.7355","_rn_":"3"},{"1":"4","2":"85.1113","_rn_":"4"},{"1":"5","2":"85.1487","_rn_":"5"},{"1":"6","2":"84.4775","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-frame-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXR0YWNoKHZpc2Nvc2l0eSlcbmBgYCJ9 -->
-<pre class="r"><code>attach(viscosity)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXR0YWNoKHZpc2Nvc2l0eSlcblxuYGBgIn0= -->
+<pre class="r"><code>attach(viscosity)
+</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSB2aXNjb3NpdHkgKHBvcyA9IDQpOlxuXG4gICAgUmVhZGluZ3MsIFRpbWUuUGVyaW9kXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20gdmlzY29zaXR5IChwb3MgPSA1KTpcblxuICAgIFJlYWRpbmdzLCBUaW1lLlBlcmlvZFxuXG5UaGUgZm9sbG93aW5nIG9iamVjdHMgYXJlIG1hc2tlZCBmcm9tIHZpc2Nvc2l0eSAocG9zID0gNik6XG5cbiAgICBSZWFkaW5ncywgVGltZS5QZXJpb2RcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSB2aXNjb3NpdHkgKHBvcyA9IDcpOlxuXG4gICAgUmVhZGluZ3MsIFRpbWUuUGVyaW9kXG4ifQ== -->
-<pre><code>The following objects are masked from viscosity (pos = 4):
-
-    Readings, Time.Period
-
-The following objects are masked from viscosity (pos = 5):
-
-    Readings, Time.Period
-
-The following objects are masked from viscosity (pos = 6):
-
-    Readings, Time.Period
-
-The following objects are masked from viscosity (pos = 7):
-
-    Readings, Time.Period</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBjYWxjdWxhdGluZyB0aGUgbWVhbmQgeUhhdFxuXG55SGF0IDwtIHJvdW5kKG1lYW4oUmVhZGluZ3MpLDQpXG55SGF0XG5gYGAifQ== -->
@@ -1841,22 +1825,24 @@ The following objects are masked from viscosity (pos = 7):
 yHat &lt;- round(mean(Readings),4)
 yHat</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDg0LjkwNTNcbiJ9 -->
-<pre><code>[1] 84.9053</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDg0LjkxNTNcbiJ9 -->
+<pre><code>[1] 84.9153</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBsYWcgayA9IDFcblxuXG5cbmBgYCJ9 -->
-<pre class="r"><code># lag k = 1
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBsYWcgayA9IDFcblxuXG5cbmBgYFxuYGBgIn0= -->
+<pre class="r"><code>```r
+# lag k = 1
 </code></pre>
+<p>```</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkF1dG9jb3JyZWxhdGlvbiBmdW5jdGlvbiBBQ0YiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCg0KIyBEYXRhIGxvYWQNCg0KdmlzY29zaXR5IDwtIHJlYWQuY3N2KCJ2aXNjb3NpdHkuY3N2IiwgaGVhZGVyPSBULCBzZXA9IjsiKQ0KaGVhZCh2aXNjb3NpdHkpDQphdHRhY2godmlzY29zaXR5KQ0KDQpgYGANCmBgYHtyfQ0KIyBjYWxjdWxhdGluZyB0aGUgbWVhbmQgeUhhdA0KDQp5SGF0IDwtIHJvdW5kKG1lYW4oUmVhZGluZ3MpLDQpDQp5SGF0DQoNCmBgYA0KDQoNCg0KYGBge3J9DQojIGxhZyBrID0gMQ0KDQoNCg0KYGBgDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkF1dG9jb3JyZWxhdGlvbiBmdW5jdGlvbiBBQ0YiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCg0KIyBEYXRhIGxvYWQNCg0KdmlzY29zaXR5IDwtIHJlYWQuY3N2KCJ2aXNjb3NpdHkuY3N2IiwgaGVhZGVyPSBULCBzZXA9IjsiKQ0KaGVhZCh2aXNjb3NpdHkpDQphdHRhY2godmlzY29zaXR5KQ0KDQpgYGANCmBgYHtyfQ0KIyBjYWxjdWxhdGluZyB0aGUgbWVhbmQgeUhhdA0KDQp5SGF0IDwtIHJvdW5kKG1lYW4oUmVhZGluZ3MpLDQpDQp5SGF0DQojIGp1c3QgYSBjb21tZW50DQoNCmBgYA0KDQoNCg0KYGBge3J9DQojIGxhZyBrID0gMQ0KDQoNCg0KYGBgDQoNCg==</div>
 
 
 
