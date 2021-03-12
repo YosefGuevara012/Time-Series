@@ -2,18 +2,22 @@
 title: "Autocorrelation function ACF"
 output: html_notebook
 ---
+#### Chemical Process Viscosity Readings
 
 ```{r}
 
 # Data load
+
 
 viscosity <- read.csv("viscosity.csv", header= T, sep=";")
 head(viscosity)
 attach(viscosity)
 
 ```
+#### Calculating the mean of the readings
+
 ```{r}
-# calculating the meand yHat
+
 
 
 yHat <- round(mean(Readings),4)
@@ -22,9 +26,31 @@ yHat
 # just a comment
 
 ```
+#### Calculating the Autocovariance and Autocorrelation
+
+A time series Fucntion is stationary if the mean of the joint probability distribution of any two observation, y and y(t+k), is the same or any two periods of time t and t+k separated by the same interval K called lag.
+
+If we look on the scatter plot of the data we can see that there is a positive correlation between t and t+1
+
 ```{r}
 
-# Autocovariance lag k = 1
+t <- Readings[-length(Readings)]
+t_1 <- Readings[-1]
+
+plot(t,t_1, xlab="Reading, Time Period t", ylab="Reading, Time Period t+1",)
+
+```
+
+
+#### Fuction of the covariance in time Co
+
+
+The covariance of te time 0 is the variance of the Time Series 
+
+```{r}
+
+
+# Covariance of the time 0
 
 co <- function(vector){
   
