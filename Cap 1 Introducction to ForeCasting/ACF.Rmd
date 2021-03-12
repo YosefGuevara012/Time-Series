@@ -1,0 +1,140 @@
+---
+title: "Autocorrelation function ACF"
+output: html_notebook
+---
+
+```{r}
+
+# Data load
+
+viscosity <- read.csv("viscosity.csv", header= T, sep=";")
+head(viscosity)
+attach(viscosity)
+
+```
+```{r}
+# calculating the meand yHat
+
+
+yHat <- round(mean(Readings),4)
+yHat
+
+# just a comment
+
+```
+```{r}
+
+# Autocovariance lag k = 1
+
+co <- function(vector){
+  
+  Co <- c()
+  
+  for (i in 1:length(vector)){
+  
+    Co[i] <- (vector[i]-yHat)*(vector[i]-yHat)
+  
+  }
+  
+  Co <- sum(Co)/length(vector)
+  Co <- round(Co, 4)
+  
+  return (Co)
+  
+}
+
+Co <- co(Readings)
+Co
+```
+
+
+```{r}
+# Autocovariance lag k = 1
+
+C1 <- c()
+
+for (i in 1:(length(Readings)-1)){
+  
+  C1[i] <- (Readings[i]-yHat)*(Readings[i+1]-yHat)
+  
+}
+C1 <- sum(C1)/100
+C1
+```
+
+```{r}
+
+r1 <- C1/Co
+r1
+
+```
+
+
+```{r}
+# Autocovariance lag k = 2
+
+C2 <- c()
+
+for (i in 1:(length(Readings)-2)){
+  
+  C2[i] <- (Readings[i]-yHat)*(Readings[i+2]-yHat)
+  
+}
+C2 <- sum(C2)/100
+C2
+```
+```{r}
+
+# ACF autocorrelation function
+
+ACF <- function(vector,kend = 25){
+  
+  yHat <- mean(vector)
+  Co <- co(vector)
+  
+  cov_vector <- c()
+  rn <- c()
+  
+  for ( i in 1:kend){
+    
+    Cn <- c()
+    
+    for (j in 1:(length(vector)-i)){
+  
+      Cn[j] <-(vector[j]-yHat)*(vector[j+i]-yHat)
+      
+    }
+    cov_vector[i]<- sum(Cn)/length(vector)
+    rn[i] <- cov_vector[i]/Co
+  }
+  
+  #cov_vector < round(cov_vector,4)
+  #rn <- round(rn,4)
+  result <- data.frame(cov_vector,rn)
+  return(result)
+  
+  
+}
+
+```
+
+
+```{r}
+
+# ACF results
+
+acf <- ACF(Readings)
+
+acf[2]
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+ggplot(acf, aes(x = seq(1:25), y = rn)) +
+  geom_col(position = "identity") + 
+  ggtitle("ACF") +
+  xlab("Lag, K") + ylab("Autocorrelation, rk")
+```
+
