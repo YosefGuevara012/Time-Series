@@ -55,6 +55,7 @@ The covariance of te time 0 is the variance of the Time Series
 co <- function(vector){
   
   Co <- c()
+  yHat <- mean(vector)
   
   for (i in 1:length(vector)){
   

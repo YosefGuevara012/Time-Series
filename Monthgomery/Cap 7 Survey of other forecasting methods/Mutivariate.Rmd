@@ -39,6 +39,77 @@ print("Matriz de Covariables")
 print("---------------------")
 pre_cov
 ```
+```{r}
+# Covariance of the time 0
+
+co <- function(vector){
+  
+  Co <- c()
+  yHat <- mean(vector)
+  for (i in 1:length(vector)){
+  
+    Co[i] <- (vector[i]-yHat)*(vector[i]-yHat)
+  
+  }
+  
+  Co <- sum(Co)/length(vector)
+  Co <- round(Co, 4)
+  
+  return (Co)
+  
+}
+```
+
+
+```{r}
+# ACF autocorrelation function
+
+ACF <- function(vector,kend = 25){
+  
+  yHat <- mean(vector)
+  Co <- co(vector)
+  
+  cov_vector <- c()
+  rn <- c()
+  
+  for ( i in 1:kend){
+    
+    Cn <- c()
+    
+    for (j in 1:(length(vector)-i)){
+  
+      Cn[j] <-(vector[j]-yHat)*(vector[j+i]-yHat)
+      
+    }
+    cov_vector[i]<- sum(Cn)/length(vector)
+    rn[i] <- cov_vector[i]/Co
+  }
+  
+  #cov_vector < round(cov_vector,4)
+  #rn <- round(rn,4)
+  result <- data.frame(cov_vector,rn)
+  return(result)
+  
+  
+}
+
+```
+
+```{r}
+acf <- ACF(front, kend = length(front))
+```
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+ggplot(acf, aes(x = seq(1:length(front)), y = rn)) +
+  geom_col(position = "identity") + 
+  ggtitle("ACF") +
+  xlab("Lag, K") + ylab("Autocorrelation, rk")
+
+```
 
 
 ```{r}
