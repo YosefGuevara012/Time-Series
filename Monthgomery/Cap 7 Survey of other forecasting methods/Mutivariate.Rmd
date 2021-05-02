@@ -21,8 +21,11 @@ The pressure readings at two ends of an industrial furnace are taken every ten m
 
 ```{r}
 par(mfrow = c(2,1))
-plot(index,front, type="l")
-plot(index, back, type="l")
+plot(index,front, type="l", main = "Pressure Readings at Both Ends of the Furnace",xlab="Sampling each (10 min)",ylab="Front", cex.main = 0.8)
+points(index,front,pch = 1)
+
+plot(index, back, type="l",ylab="Back",xlab="Sampling each (10 min)", cex.main = 0.8)
+points(index,back,pch = 1)
 ```
 
 ```{r}
@@ -32,7 +35,39 @@ covback <- c(cov(front,back),1)
 pre_cov<- as.table(rbind(covfront,covback))
 rownames(pre_cov) <- c("front","back")
 colnames(pre_cov) <- c("front","back")
-prin("Matriz de Covariables")
+print("Matriz de Covariables")
+print("---------------------")
 pre_cov
+```
+
+
+```{r}
+stocks <- read.csv("stocks.csv", sep=",")
+head(stocks)
+```
+
+```{r}
+MTSplot(stocks)
+```
+
+
+```{r}
+cor(stocks)
+```
+```{r}
+cor(stocks, method = "spearman")
+```
+```{r}
+pairs(stocks)
+```
+
+
+```{r}
+pairs(stocks, lower.panel = NULL, main = "Stocks Correlation Scatterplots")
+```
+
+```{r}
+require(corrplot)
+corrplot(cor(stocks), method = "number")
 ```
 
