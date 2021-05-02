@@ -1,0 +1,38 @@
+---
+title: "Taller 1"
+output: html_notebook
+---
+
+```{r}
+library("MTS")
+library("xts")
+library("zoo")
+```
+
+# Pressure Readings at Both Ends of the Furnace
+
+```{r}
+pressure <- read.csv("pressure.csv", header = T, sep=",")
+attach(pressure)
+head(pressure)
+```
+
+The pressure readings at two ends of an industrial furnace are taken every ten minutes
+
+```{r}
+par(mfrow = c(2,1))
+plot(index,front, type="l")
+plot(index, back, type="l")
+```
+
+```{r}
+
+covfront <- c(1,cov(front,back))
+covback <- c(cov(front,back),1)
+pre_cov<- as.table(rbind(covfront,covback))
+rownames(pre_cov) <- c("front","back")
+colnames(pre_cov) <- c("front","back")
+prin("Matriz de Covariables")
+pre_cov
+```
+

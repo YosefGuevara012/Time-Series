@@ -1,8 +1,6 @@
 
 
 library(MTS)
-setwd("D:/")
-getwd
 
 ###Clase 1.  Introduccion de diseño de graficas
 
