@@ -6,7 +6,7 @@ output: html_notebook
 ```{r}
 library("MTS")
 library("xts")
-library("zoo")
+library("zoo");
 ```
 
 # Pressure Readings at Both Ends of the Furnace
@@ -17,28 +17,31 @@ attach(pressure)
 head(pressure)
 ```
 
-The pressure readings at two ends of an industrial furnace are taken every ten minutes
+Las lecturas de presión en dos extremos de un horno industrial se toman cada diez minutos
 
 ```{r}
 par(mfrow = c(2,1))
-plot(index,front, type="l", main = "Pressure Readings at Both Ends of the Furnace",xlab="Sampling each (10 min)",ylab="Front", cex.main = 0.8)
-points(index,front,pch = 1)
+plot(front, type="l", main = "Lecturas de presión en ambos extremos del horno",xlab="Intervalos(10 min)",ylab="Frontal", cex.main = 0.8)
+points(front,pch = 1)
 
-plot(index, back, type="l",ylab="Back",xlab="Sampling each (10 min)", cex.main = 0.8)
-points(index,back,pch = 1)
+plot(back, type="l",ylab="Posterior",xlab="Intervalos(10 min)", cex.main = 0.8)
+points(back,pch = 1)
 ```
+
+
+
+
+
 
 ```{r}
-
-covfront <- c(1,cov(front,back))
-covback <- c(cov(front,back),1)
-pre_cov<- as.table(rbind(covfront,covback))
-rownames(pre_cov) <- c("front","back")
-colnames(pre_cov) <- c("front","back")
-print("Matriz de Covariables")
-print("---------------------")
-pre_cov
+cov(pressure)
 ```
+
+
+
+
+
+
 ```{r}
 # Covariance of the time 0
 
@@ -64,13 +67,8 @@ co <- function(vector){
 ```{r}
 # ACF autocorrelation function
 
-ACF <- function(vector){
+ACF <- function(vector,kend = 25){
   
-  require(dplyr)
-  require(ggplot2)
-
-  
-  kend <- length(vector)
   yHat <- mean(vector)
   Co <- co(vector)
   
@@ -93,14 +91,7 @@ ACF <- function(vector){
   #cov_vector < round(cov_vector,4)
   #rn <- round(rn,4)
   result <- data.frame(cov_vector,rn)
-  
-  graph <- ggplot(result, aes(x = seq(1:length(vector)), y = rn)) +
-  geom_col(position = "identity") + 
-  ggtitle("ACF") +
-  xlab("Lag, K") + ylab("Autocorrelation, rk")
-  
- 
-  return(list(result, graph))
+  return(result)
   
   
 }
@@ -108,15 +99,18 @@ ACF <- function(vector){
 ```
 
 ```{r}
-acf_front <- ACF(front)
-acf_front
-
+acf <- ACF(front, kend = length(front))
 ```
 
-```{r}
-acf_back <- ACF(back)
-acf_back
 
+```{r}
+library(dplyr)
+library(ggplot2)
+
+ggplot(acf, aes(x = seq(1:length(front)), y = rn)) +
+  geom_col(position = "identity") + 
+  ggtitle("ACF") +
+  xlab("Lag, K") + ylab("Autocorrelation, rk")
 
 ```
 
@@ -134,8 +128,6 @@ MTSplot(stocks)
 ```{r}
 cor(stocks)
 ```
-
-
 ```{r}
 cor(stocks, method = "spearman")
 ```
@@ -151,5 +143,10 @@ pairs(stocks, lower.panel = NULL, main = "Stocks Correlation Scatterplots")
 ```{r}
 require(corrplot)
 corrplot(cor(stocks), method = "number")
+```
+```{r}
+
+cov(stocks)
+
 ```
 
