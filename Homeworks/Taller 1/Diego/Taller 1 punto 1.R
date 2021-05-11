@@ -1,11 +1,8 @@
 # Series de tiempo multivariada
 
-rm(list=ls()) 
-install.packages("MTS")
+
 library(MTS)
-install.packages("mvtnorm")
 library(mtvnorm)
-setwd("C:/Users/DDUQUE/OneDrive - Fundacion Corona/DIEGO DUQUE - PERSONAL/2.Universidad/2. ESTADÍSTICA/Series de tiempo multivariada")
 
 #Cargar bases de datos
 
@@ -31,3 +28,4 @@ sig=diag(3)
 x=rmvnorm(300,rep(0,3),sig)
 MTSplot(x) 
 ccm(x)
+

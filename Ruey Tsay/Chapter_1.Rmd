@@ -1,0 +1,57 @@
+---
+title: "CHAPTER 1 Multivariate Linear Time Series"
+output: html_notebook
+---
+
+```{r}
+library(MTS)
+library(mvtnorm)
+```
+
+```{r}
+sig=diag(2) #create the 2-by-2 identity matrix
+
+```
+
+```{r}
+x=rmvnorm(300,rep(0,2),sig) #generate random draws
+
+```
+
+```{r}
+colnames(x) <- c("Serie 1", "Serie 2")
+MTSplot(x) # Obtain time series plots (output not shown)
+
+```
+
+```{r}
+ccm(x)
+```
+
+```{r}
+# Prueba Ljung-Box
+# Ho: Los datos se distribuyen de forma independiente la correclacion de los datos es 0.
+# Ha: Los datos no se distribuyen de forma independiente.
+
+LB <- mq(x, lag = 10)
+
+```
+```{r}
+plot(x[,1],main = "Prueba gráfica de raíz unitaria", xlab = "Tiempo", ylab="Serie 1", type = "l")
+abline(h = c(0,1.95, -2.2), col = c("darkgreen", "blue", "blue"),
+                      lty = c(1,2, 2), lwd = c(1,1, 1))
+```
+$$H_0:\:\rho \:\:=\:1\:\:y\:\:H_a:\:\rho \:<\:1\:$$
+
+```{r}
+library("vars");
+data("Canada");
+head(Canada)
+```
+
+```{r}
+
+adf1 <- summary(ur.df(Canada[, "prod"], type = "trend", lags = 2))
+adf1
+```
+
