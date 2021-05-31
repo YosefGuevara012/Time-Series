@@ -1,5 +1,4 @@
 ---
-title: "CHAPTER 1 Multivariate Linear Time Series"
 output: word_document
 ---
 

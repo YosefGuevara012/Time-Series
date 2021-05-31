@@ -353,33 +353,47 @@ abline(h = c(0,1.95, -2.2), col = c(&quot;darkgreen&quot;, &quot;blue&quot;, &qu
 <p><span class="math display">\[H_0:\:\rho \:\:=\:1\:\:y\:\:H_a:\:\rho \:&lt;\:1\:\]</span></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5uYW1lcyA8LSBjb2xuYW1lcyhDYW5hZGEpXG5jYXQoXCJWYXJpYWJsZVwiLFwidCB0ZXN0XCIsXCJcXHRcIiwgXCI1IHBjdFwiLFwiXFxuXCIpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5uYW1lcyA8LSBjb2xuYW1lcyhDYW5hZGEpXG5jYXQoXCJWYXJpYWJsZVwiLFwidCB0ZXN0XCIsXCJcXHRcIiwgXCIxIHBjdFwiLCBcIjUgcGN0XCIsIFwiMTAgcGN0XCIsXCJcXG5cIilcbmBgYCJ9 -->
 <pre class="r"><code>
 names &lt;- colnames(Canada)
-cat(&quot;Variable&quot;,&quot;t test&quot;,&quot;\t&quot;, &quot;5 pct&quot;,&quot;\n&quot;)</code></pre>
+cat(&quot;Variable&quot;,&quot;t test&quot;,&quot;\t&quot;, &quot;1 pct&quot;, &quot;5 pct&quot;, &quot;10 pct&quot;,&quot;\n&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVmFyaWFibGUgdCB0ZXN0IFx0IDUgcGN0IFxuIn0= -->
-<pre><code>Variable t test      5 pct </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiVmFyaWFibGUgdCB0ZXN0IFx0IDEgcGN0IDUgcGN0IDEwIHBjdCBcbiJ9 -->
+<pre><code>Variable t test      1 pct 5 pct 10 pct </code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZm9yKGkgaW4gMTo0KXtcbiBcbiAgdGVzdCA8LSBzdW1tYXJ5KHVyLmRmKENhbmFkYVssIGldLCB0eXBlID0gXCJub25lXCIpKVxuICBjYXQoIG5hbWVzW2ldLFwiXFx0XCIsIHRlc3RAdGVzdHN0YXRbMV0sXCJcXHRcIilcbiAgY2F0KCB0ZXN0QGN2YWxbMl0sIFwiXFxuXCIpXG59XG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZm9yKGkgaW4gMTo0KXtcbiBcbiAgdGVzdCA8LSBzdW1tYXJ5KHVyLmRmKENhbmFkYVssIGldLCB0eXBlID0gXCJub25lXCIpKVxuICBjYXQoIG5hbWVzW2ldLFwiXFx0XCIsIHRlc3RAdGVzdHN0YXRbMV0sXCJcXHRcIiwgdGVzdEBjdmFsWzFdLHRlc3RAY3ZhbFsyXSwgdGVzdEBjdmFsWzNdLCBcIlxcblwiKVxuXG59XG5gYGAifQ== -->
 <pre class="r"><code>for(i in 1:4){
  
   test &lt;- summary(ur.df(Canada[, i], type = &quot;none&quot;))
-  cat( names[i],&quot;\t&quot;, test@teststat[1],&quot;\t&quot;)
-  cat( test@cval[2], &quot;\n&quot;)
+  cat( names[i],&quot;\t&quot;, test@teststat[1],&quot;\t&quot;, test@cval[1],test@cval[2], test@cval[3], &quot;\n&quot;)
+
 }</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiZSBcdCAyLjA3MTMyIFx0LTEuOTUgXG5wcm9kIFx0IDEuMzc5ODk2IFx0LTEuOTUgXG5ydyBcdCAzLjQ3MDYxMyBcdC0xLjk1IFxuVSBcdCAtMC41MDQxMjc1IFx0LTEuOTUgXG4ifQ== -->
-<pre><code>e    2.07132    -1.95 
-prod     1.379896   -1.95 
-rw   3.470613   -1.95 
-U    -0.5041275     -1.95 </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiZSBcdCAyLjA3MTMyIFx0IC0yLjYgLTEuOTUgLTEuNjEgXG5wcm9kIFx0IDEuMzc5ODk2IFx0IC0yLjYgLTEuOTUgLTEuNjEgXG5ydyBcdCAzLjQ3MDYxMyBcdCAtMi42IC0xLjk1IC0xLjYxIFxuVSBcdCAtMC41MDQxMjc1IFx0IC0yLjYgLTEuOTUgLTEuNjEgXG4ifQ== -->
+<pre><code>e    2.07132     -2.6 -1.95 -1.61 
+prod     1.379896    -2.6 -1.95 -1.61 
+rw   3.470613    -2.6 -1.95 -1.61 
+U    -0.5041275      -2.6 -1.95 -1.61 </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMgPC0gY29sbmFtZXMoQ2FuYWRhKVxuY2F0KFwiVmFyaWFibGVcIixcInQgdGVzdFwiLFwiXFx0XCIsIFwiMSBwY3RcIiwgXCI1IHBjdFwiLCBcIjEwIHBjdFwiLFwiXFxuXCIpXG5mb3IoaSBpbiAxOjQpe1xuIFxuICB0ZXN0IDwtIHN1bW1hcnkodXIuZGYoQ2FuYWRhWywgaV0sIHR5cGUgPSBcIm5vbmVcIikpXG4gIGNhdCggbmFtZXNbaV0sXCJcXHRcIiwgdGVzdEB0ZXN0c3RhdFsxXSxcIlxcdFwiLCB0ZXN0QGN2YWxbMV0sdGVzdEBjdmFsWzJdLCB0ZXN0QGN2YWxbM10sIFwiXFxuXCIpXG5cbn1cbmBgYCJ9 -->
+<pre class="r"><code>names &lt;- colnames(Canada)
+cat(&quot;Variable&quot;,&quot;t test&quot;,&quot;\t&quot;, &quot;1 pct&quot;, &quot;5 pct&quot;, &quot;10 pct&quot;,&quot;\n&quot;)
+for(i in 1:4){
+ 
+  test &lt;- summary(ur.df(Canada[, i], type = &quot;none&quot;))
+  cat( names[i],&quot;\t&quot;, test@teststat[1],&quot;\t&quot;, test@cval[1],test@cval[2], test@cval[3], &quot;\n&quot;)
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkNIQVBURVIgMSBNdWx0aXZhcmlhdGUgTGluZWFyIFRpbWUgU2VyaWVzIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KYGBge3J9DQpsaWJyYXJ5KE1UUykNCmxpYnJhcnkobXZ0bm9ybSkNCmBgYA0KDQpgYGB7cn0NCnNpZz1kaWFnKDIpICNjcmVhdGUgdGhlIDItYnktMiBpZGVudGl0eSBtYXRyaXgNCg0KYGBgDQoNCmBgYHtyfQ0KeD1ybXZub3JtKDMwMCxyZXAoMCwyKSxzaWcpICNnZW5lcmF0ZSByYW5kb20gZHJhd3MNCg0KYGBgDQoNCmBgYHtyfQ0KY29sbmFtZXMoeCkgPC0gYygiU2VyaWUgMSIsICJTZXJpZSAyIikNCk1UU3Bsb3QoeCkgIyBPYnRhaW4gdGltZSBzZXJpZXMgcGxvdHMgKG91dHB1dCBub3Qgc2hvd24pDQoNCmBgYA0KDQpgYGB7cn0NCmNjbSh4KQ0KYGBgDQoNCmBgYHtyfQ0KIyBQcnVlYmEgTGp1bmctQm94DQojIEhvOiBMb3MgZGF0b3Mgc2UgZGlzdHJpYnV5ZW4gZGUgZm9ybWEgaW5kZXBlbmRpZW50ZSBsYSBjb3JyZWNsYWNpb24gZGUgbG9zIGRhdG9zIGVzIDAuDQojIEhhOiBMb3MgZGF0b3Mgbm8gc2UgZGlzdHJpYnV5ZW4gZGUgZm9ybWEgaW5kZXBlbmRpZW50ZS4NCg0KTEIgPC0gbXEoeCwgbGFnID0gMTApDQoNCmBgYA0KYGBge3J9DQpwbG90KHhbLDFdLG1haW4gPSAiUHJ1ZWJhIGdyw6FmaWNhIGRlIHJhw616IHVuaXRhcmlhIiwgeGxhYiA9ICJUaWVtcG8iLCB5bGFiPSJTZXJpZSAxIiwgdHlwZSA9ICJsIikNCmFibGluZShoID0gYygwLDEuOTUsIC0yLjIpLCBjb2wgPSBjKCJkYXJrZ3JlZW4iLCAiYmx1ZSIsICJibHVlIiksDQogICAgICAgICAgICAgICAgICAgICAgbHR5ID0gYygxLDIsIDIpLCBsd2QgPSBjKDEsMSwgMSkpDQpgYGANCiQkSF8wOlw6XHJobyBcOlw6PVw6MVw6XDp5XDpcOkhfYTpcOlxyaG8gXDo8XDoxXDokJA0KDQoNCg0KDQoNCg0KYGBge3J9DQoNCm5hbWVzIDwtIGNvbG5hbWVzKENhbmFkYSkNCmNhdCgiVmFyaWFibGUiLCJ0IHRlc3QiLCJcdCIsICI1IHBjdCIsIlxuIikNCmZvcihpIGluIDE6NCl7DQogDQogIHRlc3QgPC0gc3VtbWFyeSh1ci5kZihDYW5hZGFbLCBpXSwgdHlwZSA9ICJub25lIikpDQogIGNhdCggbmFtZXNbaV0sIlx0IiwgdGVzdEB0ZXN0c3RhdFsxXSwiXHQiKQ0KICBjYXQoIHRlc3RAY3ZhbFsyXSwgIlxuIikNCn0NCg0KYGBgDQoNCg0K</div>
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkNIQVBURVIgMSBNdWx0aXZhcmlhdGUgTGluZWFyIFRpbWUgU2VyaWVzIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KYGBge3J9DQpsaWJyYXJ5KE1UUykNCmxpYnJhcnkobXZ0bm9ybSkNCmBgYA0KDQpgYGB7cn0NCnNpZz1kaWFnKDIpICNjcmVhdGUgdGhlIDItYnktMiBpZGVudGl0eSBtYXRyaXgNCg0KYGBgDQoNCmBgYHtyfQ0KeD1ybXZub3JtKDMwMCxyZXAoMCwyKSxzaWcpICNnZW5lcmF0ZSByYW5kb20gZHJhd3MNCg0KYGBgDQoNCmBgYHtyfQ0KY29sbmFtZXMoeCkgPC0gYygiU2VyaWUgMSIsICJTZXJpZSAyIikNCk1UU3Bsb3QoeCkgIyBPYnRhaW4gdGltZSBzZXJpZXMgcGxvdHMgKG91dHB1dCBub3Qgc2hvd24pDQoNCmBgYA0KDQpgYGB7cn0NCmNjbSh4KQ0KYGBgDQoNCmBgYHtyfQ0KIyBQcnVlYmEgTGp1bmctQm94DQojIEhvOiBMb3MgZGF0b3Mgc2UgZGlzdHJpYnV5ZW4gZGUgZm9ybWEgaW5kZXBlbmRpZW50ZSBsYSBjb3JyZWNsYWNpb24gZGUgbG9zIGRhdG9zIGVzIDAuDQojIEhhOiBMb3MgZGF0b3Mgbm8gc2UgZGlzdHJpYnV5ZW4gZGUgZm9ybWEgaW5kZXBlbmRpZW50ZS4NCg0KTEIgPC0gbXEoeCwgbGFnID0gMTApDQoNCmBgYA0KYGBge3J9DQpwbG90KHhbLDFdLG1haW4gPSAiUHJ1ZWJhIGdyw6FmaWNhIGRlIHJhw616IHVuaXRhcmlhIiwgeGxhYiA9ICJUaWVtcG8iLCB5bGFiPSJTZXJpZSAxIiwgdHlwZSA9ICJsIikNCmFibGluZShoID0gYygwLDEuOTUsIC0yLjIpLCBjb2wgPSBjKCJkYXJrZ3JlZW4iLCAiYmx1ZSIsICJibHVlIiksDQogICAgICAgICAgICAgICAgICAgICAgbHR5ID0gYygxLDIsIDIpLCBsd2QgPSBjKDEsMSwgMSkpDQpgYGANCiQkSF8wOlw6XHJobyBcOlw6PVw6MVw6XDp5XDpcOkhfYTpcOlxyaG8gXDo8XDoxXDokJA0KDQoNCg0KDQoNCg0KYGBge3J9DQoNCm5hbWVzIDwtIGNvbG5hbWVzKENhbmFkYSkNCmNhdCgiVmFyaWFibGUiLCJ0IHRlc3QiLCJcdCIsICIxIHBjdCIsICI1IHBjdCIsICIxMCBwY3QiLCJcbiIpDQpmb3IoaSBpbiAxOjQpew0KIA0KICB0ZXN0IDwtIHN1bW1hcnkodXIuZGYoQ2FuYWRhWywgaV0sIHR5cGUgPSAibm9uZSIpKQ0KICBjYXQoIG5hbWVzW2ldLCJcdCIsIHRlc3RAdGVzdHN0YXRbMV0sIlx0IiwgdGVzdEBjdmFsWzFdLHRlc3RAY3ZhbFsyXSwgdGVzdEBjdmFsWzNdLCAiXG4iKQ0KDQp9DQoNCmBgYA0KDQpgYGB7cn0NCm5hbWVzIDwtIGNvbG5hbWVzKENhbmFkYSkNCmNhdCgiVmFyaWFibGUiLCJ0IHRlc3QiLCJcdCIsICIxIHBjdCIsICI1IHBjdCIsICIxMCBwY3QiLCJcbiIpDQpmb3IoaSBpbiAxOjQpew0KIA0KICB0ZXN0IDwtIHN1bW1hcnkodXIuZGYoQ2FuYWRhWywgaV0sIHR5cGUgPSAibm9uZSIpKQ0KICBjYXQoIG5hbWVzW2ldLCJcdCIsIHRlc3RAdGVzdHN0YXRbMV0sIlx0IiwgdGVzdEBjdmFsWzFdLHRlc3RAY3ZhbFsyXSwgdGVzdEBjdmFsWzNdLCAiXG4iKQ0KDQp9DQpgYGANCg0K</div>
 
 
 
