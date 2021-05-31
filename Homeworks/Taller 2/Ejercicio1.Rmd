@@ -2,30 +2,45 @@
 output: word_document
 ---
 
+1. 	Haga un análisis de la prueba de hipótesis de correlación cruzada. Interprete los resultados.
+
 ```{r}
 library(MTS)
 library(mvtnorm)
 ```
 
+Con el fin de establecer si existe la presencia de una tendencia, estacionalidad, valores atípicos ó discontinuidades, de tal manera que podamos verificar si las series son estacionarias o no.
+
 ```{r}
-sig=diag(2) #create the 2-by-2 identity matrix
+
+# Crea una matriz de identidad I(2)
+sig=diag(2)
 
 ```
 
+Estas función proporciona una función de densidad y un generador de números aleatorios para la distribución normal multivariante con media igual a la media y matriz de covarianza sigma.
+
 ```{r}
-x=rmvnorm(300,rep(0,2),sig) #generate random draws
-
+# Establece una semilla para que el código sea reproducibles
+set.seed(753) 
+x=rmvnorm(300,rep(0,2),sig) 
+head(x)
 ```
-
+Se grafican las series de tiempo
 ```{r}
 colnames(x) <- c("Serie 1", "Serie 2")
-MTSplot(x) # Obtain time series plots (output not shown)
+MTSplot(x)
 
 ```
+Luego de ello podemos realizar el cálculo de las matrices de correlación cruzada de la muestra CCMp, bajo  un intervalo de confianza del 95%.
 
 ```{r}
 ccm(x)
 ```
+
+También podemos comprobarlo detectando la existencia de una dependencia dinámica lineal en la Data. Mediante la prueba Ljung-Box, en la cual:
+Ho: Los residuales se distribuyen de forma independiente, la correlación de los datos es 0
+Ha: Los residuales no se distribuyen de forma independiente, los datos muestran una correlación serial.
 
 ```{r}
 # Prueba Ljung-Box
@@ -35,6 +50,9 @@ ccm(x)
 LB <- mq(x, lag = 10)
 
 ```
+
+El valor p de la prueba es superior a 0,05, por lo que se rechaza la hipótesis nula para todos los lag, esto significa que los residuales de nuestro modelo son independientes.
+
 ```{r}
 plot(x[,1],main = "Prueba gráfica de raíz unitaria", xlab = "Tiempo", ylab="Serie 1", type = "l")
 abline(h = c(0,1.95, -2.2), col = c("darkgreen", "blue", "blue"),
