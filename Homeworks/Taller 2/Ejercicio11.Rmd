@@ -12,13 +12,19 @@ A su vez, dichas características probabilísticas pueden cambiar o no en el tie
 
 Pero si esta condición no cambiar se conoce como estacionariedad, será más fácil modelar y hacer predicciones porque podremos confiar en la estabilidad de la especificación y de los parámetros estimados, aun por fuera de la muestra. Es decir si fu función acumulativa es independiente del tiempo.
 
+En general las series estacionarias (y_t) estan definidas por:
+
+a. $E(y_t) = E(y_{t-k})$, es decir constante en el tiempo.
+b. $Var(y_t) = \sigma^2 $, es decir constante en el tiempo.
+c. $cov(y_t,y_{t-k}) = cov(y_{t-i},y_{t-i-k})$, será constante mientras esten separadas en K periodos.
+
 + **Ruido blanco:**
 
 Es la serie estocástica más aleatoria, es decir es un proceso independiente e idénticamente distibuido (iid), es ruido blanco si:
 
 $$x_i \sim iid(\mu,\sigma^2)$$
 
-Donde usualmente $\mu = 0$, el ruido blanco no tiene que ser simetrico. Un ejemplo de ruido blanco es el lanzamiento de un dado, pues cada lanzamiento es independiente y la probabilidad no cambia, es decir que no es pronosticable por su propio pasado.
+Donde usualmente $\mu = 0$, el ruido blanco no tiene que ser simétrico. Un ejemplo de ruido blanco es el lanzamiento de un dado, pues cada lanzamiento es independiente y la probabilidad no cambia, es decir que no es pronosticable por su propio pasado.
 
 + **Correlograma:** 
 
@@ -53,14 +59,30 @@ Cabe resalta que un proceso estocástico no es una serie de valores o datos ya c
 
 + **Estadistica Q:** 
 
+El estadístico Q es un resultado de la prueba Box-Pierce o, en una versión modificada que proporciona mejores propiedades en muestras pequeñas, de la prueba Ljung-Box. Sigue la distribución chi-cuadrado. 
+
+Es usado para comprobar si una serie de observaciones a lo largo del tiempo son aleatorias e independientes, si las observaciones no son independientes, una observación puede estar correlacionada con otra observación $k$ unidades de tiempo más tarde, esto es llamado autocorrelación. La autocorrelación puede disminuir la precisión de un modelo y llevar a una interpretación errónea de los datos, por ejemplo  las ventas mensuales pueden verse afectadas por tendencias estacionales, como que cada año se produce un aumento de las ventas cuando la gente compra los juguetes de Navidad.
+
+Por lo tanto, una observación de las ventas mensuales en un año podría estar correlacionada con una observación de las ventas mensuales 12 meses después. Antes de elegir un modelo, se debe evaluar la autocorrelación de las diferencias mensuales de las ventas.
+
+
+
 + **Tendencia estocástica:** 
 
 Es un componente estocástico cuya varianza tiende
-a infinito con el paso  del tiempo, un ejemplo de ello es un random walk.
+a infinito con el paso  del tiempo, un ejemplo de ello es un random walk. Las tendencias estocasticas están definidas por:
+
+$$ST: y_t = \beta + y_{t-1}+\varepsilon_t$$
+
+Donde:
+
+a. $\beta$, es un parámetro.
+b. $y_{t-1}$, es una variable aleatoria.
+c. $\varepsilon_t$, es un ruido gaussiano (ruido blanco).
 
 + **Correlación cruzada:** 
 
-Esta describe el grado de correlacion entre 2 series de tiempo diferentes, es usada para determinar si el cambio de una de las series puede potencialmente causar un cambio en la otra. Por ejemplo, is una acción en el tiempo $t$ tiene efecto en el GDP en el tiempo $t+2$, sigificaria que es un indicador de lag.
+Esta describe el grado de correlación entre 2 series de tiempo diferentes, es usada para determinar si el cambio de una de las series puede potencialmente causar un cambio en la otra. Por ejemplo, is una acción en el tiempo $t$ tiene efecto en el GDP en el tiempo $t+2$, significara que es un indicador de lag.
 
 ```{r echo=FALSE, out.width='100%'}
 knitr::include_graphics('CCF.PNG')

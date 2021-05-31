@@ -3,4 +3,24 @@ title: "Ejercicio 4"
 output: word_document
 ---
 
-4. 	Con los datos anteriores haga un análisis del modelo VAR(1) .  interprete los resultados
+4. 	Con los datos anteriores haga un análisis del modelo VAR(1) .  interprete los resultados.
+
+```{r, message=FALSE}
+library("vars");
+library(MTS)
+library(mvtnorm)
+library(urca)
+
+```
+
+
+```{r}
+data("Canada");
+head(Canada)
+```
+
+```{r}
+
+```
+
+
