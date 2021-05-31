@@ -1,0 +1,180 @@
+---
+title: "Stationary Vector Autoregressive Time Series"
+output: html_notebook
+---
+
+
+### 2.2.3 Stationarity Condition
+```{r}
+phi1=matrix(c(.2,-.6,.3,1.1),2,2) # Input phi_1
+phi1
+```
+
+```{r}
+sig=matrix(c(1,0.8,0.8,2),2,2) # Input sigma_a
+sig
+```
+
+```{r}
+m1=eigen(phi1) # Obtain eigenvalues & vectors
+m1
+```
+
+```{r}
+I4=diag(4) ## Create the 4-by-4 identity matrix
+pp=kronecker(phi1,phi1) # Kronecker product
+pp
+```
+```{r}
+c1=c(sig)
+c1
+```
+
+```{r}
+dd=I4-pp
+ddinv=solve(dd) ## Obtain inverse
+gam0=ddinv%*%matrix(c1,4,1) # Obtain Gamma_0
+gam0
+```
+
+```{r}
+g0=matrix(gam0,2,2)
+g1=phi1%*%g0 ## Obtain Gamma_1
+g1
+```
+
+```{r}
+g2=phi1%*%g1
+g2
+```
+
+```{r}
+D=diag(sqrt(diag(g0))) # To compute cross-correlation matrices
+D
+```
+
+```{r}
+Di=solve(D)
+Di%*%g0%*%Di
+```
+
+```{r}
+Di%*%g1%*%Di
+```
+
+```{r}
+Di%*%g2%*%Di
+```
+### 2.5.1.1 Generalized Least Squares Estimate
+
+```{r}
+da=read.table("q-gdp-ukcaus.txt",header=T)
+gdp=log(da[,3:5])
+dim(gdp)
+```
+
+```{r}
+z=gdp[2:126,]-gdp[1:125,] ## Growth rate
+z=z*100 ## Percentage growth rates
+dim(z)
+```
+
+```{r}
+Z=z[3:125,]
+X=cbind(rep(1,123),z[2:124,],z[1:123,])
+X=as.matrix(X)
+XPX=t(X)%*%X
+XPXinv=solve(XPX)
+Z=as.matrix(Z)
+XPZ=t(X)%*%Z
+bhat=XPXinv%*%XPZ
+bhat
+```
+
+```{r}
+A=Z-X%*%bhat
+Sig=t(A)%*%A/(125-(3+1)*2-1)
+Sig
+```
+
+```{r}
+COV=kronecker(Sig,XPXinv)
+se=sqrt(diag(COV))
+beta=c(bhat)
+para=cbind(beta,se,beta/se)
+para
+```
+```{r}
+Sig1=t(A)%*%A/(125-2) ## MLE of Sigma_a
+Sig1
+```
+
+## R Demonstration: Estimation of VAR models.
+
+```{r}
+library(MTS)
+```
+
+
+```{r}
+da=read.table("q-gdp-ukcaus.txt",header=T)
+gdp=log(da[,3:5])
+z=gdp[2:126,]-gdp[1:125,]
+z=z*100
+m1=VAR(z,2)
+```
+
+### R Demonstration: Bayesian estimation.
+
+```{r}
+
+da=read.table("q-gdp-ukcaus.txt",header=T)
+x=log(da[,3:5])
+dim(x)
+
+```
+```{r}
+dx=x[2:126,]-x[1:125,]
+dx=dx*100
+C=0.1*diag(7) ### lambda = 0.1
+V0=diag(3) ### Vo = I_3
+mm=BVAR(dx,p=2,C,V0)
+
+```
+
+```{r}
+z1=z/100 ### Original growth rates
+m2=VARorder(z1)
+```
+
+```{r}
+names(m2)
+```
+### R Demonstration: Multivariate Portmanteau statistics.
+
+```{r}
+names(m1)
+```
+
+```{r}
+resi=m1$residuals ### Obtain the residuals of VAR(2) fit.
+mq(resi,adj=18) ## adj is used to adjust the degrees of freedom.
+```
+### R Demonstration: Testing zero parameters.
+
+```{r}
+m3=VARchi(z,p=2)
+```
+
+```{r}
+m3=VARchi(z,p=2,thres=1.96)
+
+```
+
+### R Demonstration: Model simplification.
+
+```{r}
+m1=VAR(zt,2) # fit a un-constrained VAR(2) model.
+m2=refVAR(m1,thres=1.96) # Model refinement.
+```
+

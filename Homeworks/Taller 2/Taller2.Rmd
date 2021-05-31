@@ -43,20 +43,7 @@ abline(h = c(0,1.95, -2.2), col = c("darkgreen", "blue", "blue"),
 ```
 $$H_0:\:\rho \:\:=\:1\:\:y\:\:H_a:\:\rho \:<\:1\:$$
 
-```{r}
-library("vars");
-data("Canada");
-head(Canada)
-```
 
-```{r}
-par(mfrow=c(2,2))
-plot(Canada[,1], xlab= "time", ylab = "e")
-plot(Canada[,2], xlab= "time", ylab = "prod")
-plot(Canada[,3], xlab= "time", ylab = "rw")
-plot(Canada[,4], xlab= "time", ylab = "U")
-
-```
 
 
 
@@ -73,14 +60,5 @@ for(i in 1:4){
 }
 
 ```
-```{r}
-cat("Variable","t test","\t", "5 pct","\n")
-for(i in 1:4){
- 
-  test <- summary(ur.df(Canada[, i], type = "trendte"))
-  cat( names[i],"\t", test@teststat[1],"\t")
-  cat( test@cval[2], "\n")
-}
 
-```
 
