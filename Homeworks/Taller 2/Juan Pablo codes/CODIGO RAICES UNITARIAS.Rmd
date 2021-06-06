@@ -1,0 +1,88 @@
+---
+
+output: word_document
+---
+
+Cargar librerias
+
+```{r}
+library(tseries)
+library(MTS)
+library(ppcor)
+library(TSA)
+library(forecast)
+library(ggplot2)
+library(urca)
+```
+
+***TEST DICKEY FULLER DE RAICES UNITARIAS***
+
+El test de Dickey Fuller sirve para saber si una serie es estacionaria o no.
+
+Aumentada de Dickey Fuller, se usan los residuales para saber si son o no estacionarios
+
+
+Recordar mirar si es un objeto serie de tiempo con el comando "class"
+Generar los residuales con 
+
+
+RECORDAR QUE SE NECESITA QUE SEAN SERIES ESTACIONARIAS
+H0 = La series contiene una raiz unitaria (No estacionario)
+H1= La serie es estacionaria
+Sigue la distribución dickey fuller
+
+Cuando se le añade  tendencia y constante tenemos que :
+H0= la serie tiene tendencia estocastica
+H1 = la serie es estacionaria
+
+Arroja tao 3 phi 2 y phi 3 , se mira es tao 3
+Siempre se corren las 3 regresiones , la normal de dickey fuller , regresion con tendencia y sin constante , y regresion con constante y con tendencia.
+
+La idea es probar por cada serie univariada .
+ESPERAMOS QUE LA REGRESION NO SE ESPUREA .Al ser una regresion espurea , al parecer hay una corelacion alta , pero si no es estacionaria , pues las predicciones seran malas.ademas pueden ser series que no tienen nada que ver.
+
+Una forma de hacer una serie estacionaria , se realiza la diferenciacion 
+
+Pruebas de raiz unitaria ( Simulacion para 2 casos estacionarios)
+
+```{r}
+TT <- 100
+wn <- rnorm(TT)  # white noise , 100 datos , normal (0,1) , es estacionaria
+adf.test(wn)#Aumentada DQ Fuller
+```
+
+El Dickey -fuller es el valor de la estadistiva , el automatico usa lag de orden 4 , el p value ( la serie es estacionaria), se rechaza H0.
+
+Simulación con intercepto y tendencia
+
+```{r}
+
+intercept <- 1
+wnt <- wn + 1:TT + intercept
+adf.test(wnt)
+```
+
+Aca igualmente se rechaza H0
+
+Simulación para casos no estacionarios (Caminata aleatoria)
+
+```{r}
+rw <- cumsum(rnorm(TT))
+adf.test(rw)
+```
+No se rechaza H0 , la serie es no estacionaria.
+
+Tests Urca ( Unit root and corelation applied) : Uso del paquete en https://cran.r-project.org/web/packages/urca/urca.pdf
+
+```{r}
+wn <- rnorm(TT)
+test <- urca::ur.df(wn, type = "trend", lags = 0) # El ur.df es como tal el test
+urca::summary(test)
+```
+
+La formula  en call : lm() se lee como: La variable Z diferenciada ~ rezago 1 vez  + tendencia + constante , 
+
+interesa es mirar el z.lag.1 , para obtener la estadistica Dickey Fuller , dividimos Estimate/St.error de dicha fila.
+
+Leemos el tau3 1pct , en este caso tenemos un valor critico que es (-4.04) dicho valor critico lo comparamos con el primer numero que nos arroja "Value of test-statistic" , en este caso -12.24 , en este caso  -12.24 es mucho menor que -4.04 , luego se rechaza H0 , y concluimos que la serie es estacionaria.Se rechaza a la izquierda de la distribución
+

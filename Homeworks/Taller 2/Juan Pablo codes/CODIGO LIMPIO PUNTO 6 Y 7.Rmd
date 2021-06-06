@@ -1,0 +1,183 @@
+---
+title: "Funciones impulso respuesta"
+author: "Juan Pablo Rodriguez"
+date: "30/5/2021"
+output: word_document
+---
+6. De acuerdo con las variables macroeconómicas Inversión , ingreso y consumo.  Reconstruya las funciones impulso respuesta e interprete los resultados.
+
+FUNCIONES IMPULSO RESPUESTA
+
+Si uno toca una variable se ve como responde la otra, por esto explora la relación entre las variables.
+Estas funciones describen la evolucion de la variable de interes despues de un "choque o movimiento (Disminuir o aumentar)" en un momento dado.
+Un modelo autoregresivo se puede convertir a uno de medias moviles.
+La funnccion impulso respuesta tiene que ser influida por el error.
+EL modelo var puede ser expresado como la suma de los choques aleatorios
+
+EFECTOS CONTEMPORANEO Y PARA VARIOS HORIZONTES
+Las derivadas de dichas funciones se leen para predecir cual fue el efecto en el tiempo t , t+1 ( un periodo adelante )y t+j (j periodos adelante)respectivamente.
+Esto se muestra en un grafico desde j=0 hasta H.
+
+Respuesta a impulsos ortognolas:El choque sobre cada una de las variables es independiente , las variaciones de las variables son independientes,este supuesto no se da facilmente.
+Lo que se da en la practica es que los choques de las variables se interalacionan con las demas , por esto se descompone ala matriz de varianzas y covarianzas del modelo VAR , conocida como la descomposición de Cholesky. Los errores quedan ortogonales y son interpretables (FUNCION IMPULSO RESPUESTA ORTOGONAL). Es muy importante el orden de la causalidad ,porque de ahi sacamos como impacta 
+
+Al aumentar una desviación estandar , que efecto tiene sobrela variable respuesta.
+
+EJERCICIO 
+Cargue librerias
+
+```{r echo=FALSE}
+library(vars)
+```
+
+Cargue Base e1 donde se tiene que : 
+invest= inversión
+income=ingreso
+cons=consumo
+
+```{r}
+data <- read.table("http://www.jmulti.de/download/datasets/e1.dat", skip = 6, header = TRUE)
+```
+
+En este caso nuestro especificación de orden de causalidad será : 1. Inversión (Tiene efecto sobre el ingreso y el consumo), 2. Ingreso (Tiene efecto sobre consumo)
+Convertir el objeto a serie de tiempo , creando una serie desde 1960 hasta 1984 , con datos para cada trimestre el año
+
+```{r}
+
+data <- ts(data, start = c(1960, 1), frequency = 4)
+```
+
+Para este caso se parte de que los datos necesitan ser transformados , en este caso se realiza diferenciacion de las variables (Volver la serie de tiempo estacionaria) y aplicamos tambien el logaritmo(estabilizar la varianza)
+```{r}
+data <- diff(log(data))
+```
+Grafico de los datos transformados
+```{r}
+plot(data,  main = "Series temporales: Inversion , Ingreso y Consumo ")
+```
+Se puede observar que las series son estacionarias , despues de haberlas transformado.
+
+ESTIMACIÓN DEL MODELO VAR(2)
+
+Se elige estimar este modelo sin tendencia ni constante y con 2 resagos
+```{r}
+
+model <- VAR(data, p = 2, type = "none")#Corrida del modelo
+model#Observar los coeficientes
+
+```
+```{r}
+model_summary<-summary(model)#Resumen del modelo
+```
+
+```{r}
+# Obtencion de la matriz de varianzas y covarianzas
+
+model_summary$covres
+
+model_summary$corres
+
+```
+
+
+Necesitamos que la función impulso respuesta sea ortogonal, que nos ayuda a que no hallan ruidos provenientes de  relaciones entre las variables , ya que como se ve en la matriz de corelaciones ,  hay relaciones contemporaneas.
+
+```{r}
+fuincons <- irf(model, impulse = "income", response = "cons",
+           n.ahead = 8, ortho = TRUE, runs = 1000, seed = 12345)
+#fuincons
+plot(fuincons)
+```
+Interpretación : Un choque en   el ingreso , hace que el consumo disminuya en un 0.0067% en el primer trimestre , llegando al maximo de impacto en el tercer trimestre 0.0068% , y despues cayendo a impactos menores de 0.0048% en los trimestres siguientes, disminuyendo hasta 0.0033% en el trimestre 8.
+
+Función impulso respuesta invest - income:
+
+Como se observó anteriormente tambien debemos usar la función impulso respuesta ortogonal
+```{r}
+fuinvinc <- irf(model, impulse = "invest", response = "income",n.ahead = 8, ortho = TRUE, runs = 1000, seed = 12345)
+#fuinvinc
+plot(fuinvinc)
+```
+
+
+Interpretación : Para un choque en  la inversión , la respuesta tiene su maximo en el trimestre 2, en donde se observa un aumento porcentual en el ingreso de 0.0026% , posterior a dicho trimestre el impacto de este choque disminuye hasta llegar a ser 0.0013% en el trimestre 8.
+
+Funcion impulso respuesta : Inversion y consumo
+
+```{r}
+fuinvco <- irf(model, impulse = "invest", response = "cons",
+            n.ahead = 8, ortho = TRUE, runs = 1000, seed = 12345)
+#fuinvco
+plot(fuinvco)
+```
+Interpretación : Para un choque  en la inversión el consumo disminuye en un 0.0027% , alcanzando su maximo en le periodo 3 , 0.0036% , y posterior a dicho trimestre la respuesta disminuye hasta 0.001347% en el periodo 8.
+
+Impulso respuesta : Inversion contra inversion
+
+```{r}
+fuinv2 <- irf(model, impulse = "invest", response = "invest",
+            n.ahead = 8, ortho = TRUE, runs = 1000, seed = 12345)
+#fuinv2
+plot(fuinv2)
+```
+Interpretación Impulso respuesta inversion inversion : 
+Para un choque  en la inversión en el trimestre 1 la inversion  disminuye en un 0.0033% , siendo este su maximo impacto , y posterior a dicho trimestre el impacto  disminuye hasta 0.001351% en el periodo 8.
+
+Impulso respuesta : Ingreso contra ingreso
+
+```{r}
+fuinc2 <- irf(model, impulse = "income", response = "income",
+            n.ahead = 8, ortho = TRUE, runs = 1000, seed = 12345)
+#fuinc2
+plot(fuinc2)
+```
+Interpretación Impulso respuesta ingreso ingreso : 
+Para un choque  en el ingreso en el trimestre 1 la inversion  disminuye en un 0.012% , siendo este su maximo impacto , y posterior a dicho trimestre el impacto disminuye hasta 0.0034% en el periodo 8.
+
+
+Impulso respuesta : Consumo contra consumo
+
+```{r}
+fuinc2 <- irf(model, impulse = "cons", response = "cons",
+            n.ahead = 8, ortho = TRUE, runs = 1000, seed = 12345)
+#fuinc2
+plot(fuinc2)
+```
+
+Interpretación Impulso respuesta Consumo Consumo : 
+Para un choque  en el consumo en el trimestre 1 el consumo disminuye en un 0.0080% , siendo este su maximo impacto , y posterior a dicho trimestre el impacto disminuye hasta 0.001432% en el periodo 8.
+7. De acuerdo con el punto 6.  Evalúe los residuos del modelo: Normalidad,  ARCH.
+
+Se evaluara con respecto al VAR(2) realizado en el punto anterior .
+
+```{r}
+
+plot(model,names="e")
+
+
+
+
+
+
+```
+Podemos observar por la grafica de residuales que distribuyen como ruido blanco , lo cual es un buen indicador.
+
+Pruebas de normalidad
+H0= Los errores pertenecen a una distribución normal multivariada.
+H1=Los errores no pertencen a una distribución normal multivariada.
+
+```{r}
+normality.test(model)
+```
+Para estas pruebas de hipotesis podemos decir que la simetria es parecida a la de una normal multivariada , pero la curtosis no.
+
+ARCH MULTIVARIADO
+ Esta prueba realiza pruebas Portmanteau Q y multiplicador de Lagrange para:
+ H0= Los residuos del modelo son homocedasticos
+ H1=Los residuos del modelo no son homocedasticos
+ 
+```{r}
+arch.test(model)
+```
+
+Por el valor p podemos concluir que no se puede rechazar H0 , por tanto  los residuos del modelo son homocedasticos.

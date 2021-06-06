@@ -1,0 +1,89 @@
+---
+title: "Punto 13"
+author: "Juan Pablo Rodriguez"
+date: "30/5/2021"
+output: html_document
+---
+
+Ajuste el  modelo VAR(4) con la  tasa de interés y la inflación. (R, DP) visto en clase.
+
+Librerias
+```{r}
+library(vars)
+library(tseries)
+#library(MTS)
+library(ppcor)
+library(TSA)
+library(forecast)
+library(ggplot2)
+library(urca)
+```
+Cargue Base interest-inflation  donde se tiene que : 
+DP- Delta log gdp deflator , Esto quiere decir el deflactor del producto interno bruto , es el cociente entre el PIB nominal y el real. Es muy usado para medir la inflación. Como vemos esta diferenciado y con logaritmo, para hacerlo estacionario y estabilizar la varianza respectivamente.
+
+R- nominal long term interest rate , Esto quiere decir tasa de interes nominal a largo plazo , explicada como los bonos del estado con vencimiento a diez años
+
+```{r}
+intinfla <- read.table("intinfla.txt", header = TRUE)
+intinfla<-as.data.frame(intinfla)
+R<-intinfla$R
+```
+Convertir el objeto a serie de tiempo , creando una serie desde 1960 hasta 1984 , con datos para cada trimestre el año
+
+```{r}
+
+intinfla <- ts(intinfla, start = c(1972, 2), frequency = 4)
+intinfla
+```
+
+Grafico de los datos
+```{r}
+plot(intinfla,  main = "Series temporales: DP y R ")
+```
+Por dudas en si la variable R e estacionaria se corre el Dickey Fuller test .
+
+```{r}
+adf.test(R)
+```
+Se puede comprobar que podemos rechazar la hipotesis nula de no estacionareidad , luego R es estacionaria y puede ser analizada.
+
+Correr el modelo VAR(4)  , orden p = 4 , sin ningun tipo de tendencia o constante
+```{r}
+var4 <- VAR(intinfla, p = 4, type = "none")
+var4
+summary(var4)
+```
+Grafico de los residuales.
+
+```{r}
+plot(model,names="e")
+```
+
+
+A continuación se correran los test para el modelo VAR 4 , Test de normalidad de Jarque - Bera y test ARCH de homocedasticidad.
+
+Se evaluaran todos los test con un alfa del 0.05
+
+a.Test de normalidad:
+H0= Los errores pertenecen a una distribución normal multivariada.
+H1=Los errores no pertencen a una distribución normal multivariada.
+
+
+```{r}
+normality.test(model)
+```
+Tenemos entonces:
+Para la simetria , se observa un valor p de 0.3335 , mayor a 0.05 , por lo tanto se decide no rechazar H0 , y decir que los errores del modelo tienen una simetria que se asemeja a la normal multivariada.
+
+Para la curtosis , se observa un valor p de 0.8877 , mayor a 0.05 , por lo tanto se decide no rechazar H0 , y decir que los errores de modelo tienen una curtosis que se asemeja a la normal multivariada.
+
+b.Test ARCH:
+ARCH MULTIVARIADO
+ Esta prueba realiza pruebas Portmanteau Q y multiplicador de Lagrange para:
+ H0= Los residuos del modelo son homocedasticos
+ H1=Los residuos del modelo no son homocedasticos
+ 
+```{r}
+arch.test(var4)
+```
+Para este test , se observa un valor p de 0.03737 , con dicho valor menor a 0.05 , podemos rechazar la hipotesis nula y decir que los residuos del modelo no son homocedasticos.

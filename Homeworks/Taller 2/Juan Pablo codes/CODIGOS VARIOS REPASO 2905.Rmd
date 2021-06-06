@@ -1,0 +1,19 @@
+---
+title: "CODIGOS COSAS VARIAS"
+author: "Juan Pablo Rodriguez"
+date: "29/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Diferenciar una variable : Usado cuando son no estacionarias , para volverlas estacionarias.
+```{r}
+
+zt=diffM(x.orig)#x.orig son los datos 
+zt
+zt.ccm<-ccm(zt, lag=15)
+```
+

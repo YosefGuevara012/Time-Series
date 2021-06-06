@@ -1,0 +1,50 @@
+---
+
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r}
+library(MTS)
+library(mvtnorm)
+library(astsa)
+```
+
+CORELACION CRUZADA
+```{r}
+library(MTS)
+ sig=diag(2) # create the 2-by-2 identity matrix
+ x=rmvnorm(300,rep(0,2),sig) # generate random draws
+ MTSplot(x) # Obtain time series plots (output not shown)
+ ccm(x) 
+ # El plot de CCM se lee como si estuviesemos leyendo valores P , es decir la unica corelacion de resago significativa seria 5.
+```
+
+TEST DE CORELACION CRUZADA
+H0= No hay corelacion cruzada matriz de corelacion cruzada es 0.
+Ha = Al menos una corelacion cruzada no es cero.
+
+
+
+EJEMPLO 2
+```{r}
+sig=diag(3) #Simulation study
+z=rmvnorm(200,rep(0,3),sig)
+mq(z,10) # En este caso todos los valores p dan mayores al 0.05 % luego no se rechaza H0
+```
+Usando la libreria hatsa del profesor.
+
+```{r}
+colnames(x)<-c("DGDP","DRATE")
+DGDP<-x[,1]
+DRATE<-x[,2]
+DGDP<ts(DGDP)
+DRATE<-ts(DRATE)
+ccfvalues=ccf(DGDP,DRATE)#Sacar el croscorelograma
+ccfvalues# Sacar los valores de corelacion cruzada .
+```
+Se lee por ejemplo para el 0 corelacion entre DGDP y DRATE , para el -1 (DGDP -1) Y DRATE al aumentar el indice de desempleo , hace que un mes despues el producto interno bruto sea menor por ser una corelacion de -0.520

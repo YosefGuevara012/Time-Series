@@ -1,0 +1,21 @@
+---
+title: "Punto VAR2"
+author: "Juan Pablo Rodriguez"
+date: "29/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tsDyn)
+
+A <- matrix(c(0.2, 0, -0.1, 0.1, -0.3, 0.4, 0.2, -0.3), byrow = TRUE, nrow = 2, ncol = 4)#Creando la matriz de 2 x4 que une ambas matrices
+A
+var2 <- VAR.sim(B = A, lag = 2, include = "none", n = 300)#Corriendo la simulación del modelo
+ts.plot(var2, type="l", col=c(1,2))#Graficando
+
+```
+

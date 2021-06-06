@@ -1,0 +1,102 @@
+---
+
+output: word_document
+---
+
+*** Vectores auto regresivos***
+
+VAR(P) P es el orden del vector 
+Librerias 
+
+```{r}
+library(tseries)
+#library(MTS)
+library(ppcor)
+library(TSA)
+library(forecast)
+library(ggplot2)
+library(Ecdat)
+library(vars)
+
+```
+
+****EJEMPLO CANADA******
+
+
+```{r}
+library("vars")
+data("Canada")
+summary(Canada)
+```
+
+e =Empleo
+pro=Productividad
+rw= Salario real
+U=Desempleo
+
+Dickey fuller para la productividad , con tendencia y lag 2
+
+```{r}
+adf1 <- summary(ur.df(Canada[, "prod"], type = "trend", lags = 2))#Estadistica Dickey Fuller
+adf1
+```
+No estacionaria , -1.98 > -4.04 
+
+Test Dickey fuller con constante y un lag
+```{r}
+adf2 <- summary(ur.df(diff(Canada[, "prod"]), type = "drift",lags = 1))
+adf2
+```
+Estacionaria , -5.16 < -3.51
+
+CORRER EL MODELO VAR:
+
+```{r}
+Canada <- Canada[, c("prod", "e", "U", "rw")] #Unimos las 4 variables en una matriz.
+#Canada
+p1ct <- VAR(Canada, p = 1, type = "both")# p=1 , diciendole que queremos VAR(1), el type en este caso es both: con tendencia y con constante . OPCIONES:("const", "trend", "both", "none")
+p1ct
+```
+Como leer las ecuaciones:
+
+prod = prod.l1 + e.l1 + U.l1 + rw.l1 + const + trend 
+Prod= Z1(t)
+Prod.l1=Resago produccion
+e.l1=resago empleo
+U.l1=resago desempleo
+rw.l1=resago salario real
+const=constante
+trend=tendencia
+
+Abajo de la produccion salen los coeficientes de la "regresion"
+
+De forma igual se leen los otros modelos VAR
+
+
+Lo que nos interesa con esos coeficientes es pronosticar o encontrar funciones impulso-respuesta.
+
+***EJEMPLO TBRATE***
+
+# r = the 91-day Treasury bill rate
+# y = the log of real PIB
+# pi = the inflation rate
+
+A continuación le voy a correr la dickey fuller a las 3 variables
+```{r}
+data<-as.data.frame(Tbrate,package="Ecdat")
+
+r<-ts(data$r)#Creacion de las univariadas para los test
+adf.test(r)#Test de dickey fuller
+y<-ts(data$y)#Creacion de las univariadas para los test
+adf.test(y)#Test de dickey fuller
+pi<-ts(data$pi)#Creacion de las univariadas para los test
+adf.test(pi)#Test de dickey fuller
+
+
+```
+Aca podemos ver que para ninguna de las 3 se rechaza H0 , luego todas son no estacionarias.
+```{r}
+data<-data(Tbrate,package="Ecdat")
+del_dat= diff(data)#Diferenciando los datos porque son NO ESTACIONARIAS
+```
+
