@@ -9,17 +9,17 @@ library(mvtnorm)
 ```
 
 ```{r}
-sig=diag(2) #create the 2-by-2 identity matrix
+sig=diag(1) #create the 2-by-2 identity matrix
 
 ```
 
 ```{r}
-x=rmvnorm(300,rep(0,2),sig) #generate random draws
+x=rmvnorm(300,rep(0,1),sig) #generate random draws
 
 ```
 
 ```{r}
-colnames(x) <- c("Serie 1", "Serie 2")
+colnames(x) <- c("Serie 1")
 MTSplot(x) # Obtain time series plots (output not shown)
 
 ```
@@ -43,6 +43,17 @@ abline(h = c(0,1.95, -2.2), col = c("darkgreen", "blue", "blue"),
 ```
 $$H_0:\:\rho \:\:=\:1\:\:y\:\:H_a:\:\rho \:<\:1\:$$
 
+```{r}
+da=read.table("q-gdpunemp.txt",header=T)
+head(da)
+```
+```{r}
+x=cbind(diff(da$gdp),diff(da$rate))
+```
 
+```{r}
+mq(x,lag=12)
+
+```
 
 

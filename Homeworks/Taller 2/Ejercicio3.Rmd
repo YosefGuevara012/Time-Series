@@ -1,5 +1,4 @@
 ---
-title: "Ejericico 3"
 output: word_document
 ---
 
@@ -33,7 +32,7 @@ Para identificar que componente corresponde a que modelo del t-test tenemos que:
 
 
 
-```{r}
+```{r echo=FALSE}
 ############################################################################################
 # This R function helps to interpret the output of the urca::ur.df function.
 # The rules are based on https://stats.stackexchange.com/questions/24072/interpreting-rs-ur-df-dickey-fuller-unit-root-test-results
@@ -177,14 +176,19 @@ interp_urdf <- function(urdf, level="5pct") {
 }
 ```
 
-```{r}
+Se crea la siguiente función para facilitar el proceso de analisis, tomara como
+argumentos un objeto **ur.df**,el nivel de **significancia**  y el numero de **lags** a analizar.
+
+```{r echo=FALSE}
 autoUrca <-function(df,T.type,Lags=1, lv="5pct", analysis = TRUE){
 
 ## Enter the DF to analyze
 ## Enter the Test type to use, either "none", "drift" or "trend".
   
-names <- colnames(df)    
+names <- colnames(df)
+
 len <- ncol(df)
+
 for(i in 1:len){
   
   cat("---------------------------------","\n")
@@ -192,9 +196,10 @@ for(i in 1:len){
   
   ur <- ur.df(df[, i], type = T.type,lags = Lags)
   test <- summary(ur)
-  cat("Coefficients","\n")
-  print(test@testreg[["coefficients"]])
-  cat("Critical values for test statistics:","\n")
+  cat("Statistic:","\n")
+  print(test@teststat)
+  cat("\n")
+  cat("Critical:","\n")
   print(test@teststat)
   
   if(analysis == TRUE){
@@ -211,10 +216,110 @@ for(i in 1:len){
 
 ```
 
+```{r}
+s.autoUrca <-function(df,T.type,Lags=1, lv="5pct", analysis = TRUE){
+
+## Enter the values to analyze
+## Enter the Test type to use, either "none", "drift" or "trend".
+  
+  
+  
+  ur <- ur.df(df, type = T.type,lags = Lags)
+  test <- summary(ur)
+  cat("Statistic:","\n")
+  print(test@teststat)
+  cat("\n")
+  cat("Critical:","\n")
+  print(test@cval)
+  
+  if(analysis == TRUE){
+    
+   interp_urdf(ur,level=lv) 
+    
+  }
+  
+  
+}
+  
+  
+
+```
 
 ```{r}
-autoUrca(Canada,"trend",1,analysis = T)
+s.autoUrca(Canada[,1],"none",1,analysis = F)
+```
+
+Para el **Empleo**, con un nivel de significancia del $5\%$ para un modelo tipo **"none"**, no se rechaza la hipotesis nula, es decir que existe una raiz unitaria, pues $t_{estadistico}>tau_1$.
+
+```{r}
+s.autoUrca(Canada[,2],"none",1,analysis = F)
+```
+
+Para la  **Productividad**, con un nivel de significancia del $5\%$ para un modelo tipo **"none"**, no se rechaza la hipotesis nula, es decir que existe una raiz unitaria, pues $t_{estadistico}>tau_1$.
+
+```{r}
+s.autoUrca(Canada[,3],"none",1,analysis = F)
+```
+
+Para el **Salario real**, con un nivel de significancia del $5\%$ para un modelo tipo **"none"**, no se rechaza la hipotesis nula, es decir que existe una raiz unitaria, pues $t_{estadistico}>tau_1$.
+
+
+```{r}
+s.autoUrca(Canada[,4],"none",1,analysis = F)
+```
+
+Para el **Desempleo**, con un nivel de significancia del $5\%$ para un modelo tipo **"none"**, no se rechaza la hipotesis nula, es decir que existe una raiz unitaria, pues $t_{estadistico}>tau_1$.
+
+
+```{r}
+s.autoUrca(Canada[,1],"drift",1,analysis = F)
 ```
 
 
+Para el **Empleo**, con un nivel de significancia del $5\%$ para un modelo tipo **"drift"**, $tau2:$ no se rechaza la primera la hipotesis nula, es decir que existe una raiz unitaria, pues $tau2_{estadistico}>tau2_{critico}$,$phi1:$  no se rechaza la segunda la hipotesis nula, es decir que existe una raiz unitaria y no hay drift, pues $phi1_{estadistico}<phi1_{critico}$
 
+
+```{r}
+s.autoUrca(Canada[,2],"drift",1,analysis = F)
+```
+
+
+Para la **Productividad**, con un nivel de significancia del $5\%$ para un modelo tipo **"drift"**, $tau2:$ no se rechaza la primera la hipotesis nula, es decir que existe una raiz unitaria, pues $tau2_{estadistico}>tau2_{critico}$,$phi1:$  no se rechaza la segunda la hipotesis nula, es decir que existe una raiz unitaria y no hay drift, pues $phi1_{estadistico}<phi1_{critico}$
+
+
+```{r}
+s.autoUrca(Canada[,3],"drift",1,analysis = F)
+```
+
+
+Para el **Sallario real**, con un nivel de significancia del $5\%$ para un modelo tipo **"drift"**, $tau2:$ se rechaza la primera la hipotesis nula, es decir que no existe una raiz unitaria, pues $tau2_{estadistico}<tau2_{critico}$,$phi1:$  se rechaza la segunda la hipotesis nula, es decir que no existe una raiz unitaria y hay drift, pues $phi1_{estadistico}>phi1_{critico}$
+
+```{r}
+s.autoUrca(Canada[,4],"drift",1,analysis = F)
+```
+
+Para el **Desempleo**, con un nivel de significancia del $5\%$ para un modelo tipo **"drift"**, $tau2:$ no se rechaza la primera la hipotesis nula, es decir que existe una raiz unitaria, pues $tau2_{estadistico}>tau2_{critico}$,$phi1:$  no se rechaza la segunda la hipotesis nula, es decir que existe una raiz unitaria y no hay drift, pues $phi1_{estadistico}<phi1_{critico}$
+
+```{r}
+s.autoUrca(Canada[,1],"trend",1,analysis = F)
+```
+Para el **Empleo**, con un nivel de significancia del $5\%$ para un modelo tipo **"trend"**, $tau3:$ no se rechaza la primera la hipotesis nula, es decir que existe una raiz unitaria, pues $tau3_{estadistico}>tau3_{critico}$,$phi3:$  no se rechaza la segunda la hipotesis nula, es decir que existe una raiz unitaria y no hay trend, pues $phi3_{estadistico}<phi3_{critico}$,$phi2:$  no se rechaza la tercera la hipotesis nula, es decir que existe una raiz unitaria y no hay trend y no hay drift, pues $phi2_{estadistico}<phi2_{critico}$
+
+
+```{r}
+s.autoUrca(Canada[,2],"trend",1,analysis = F)
+```
+Para la **Productividad**, con un nivel de significancia del $5\%$ para un modelo tipo **"trend"**, $tau3:$ no se rechaza la primera la hipotesis nula, es decir que existe una raiz unitaria, pues $tau3_{estadistico}>tau3_{critico}$,$phi3:$  no se rechaza la segunda la hipotesis nula, es decir que existe una raiz unitaria y no hay trend, pues $phi3_{estadistico}<phi3_{critico}$,$phi2:$  no se rechaza la tercera la hipotesis nula, es decir que existe una raiz unitaria y no hay trend y no hay drift, pues $phi2_{estadistico}<phi2_{critico}$
+
+```{r}
+s.autoUrca(Canada[,3],"trend",1,analysis = F)
+```
+
+Para la **Salario real**, con un nivel de significancia del $5\%$ para un modelo tipo **"trend"**, $tau3:$ no se rechaza la primera la hipotesis nula, es decir que existe una raiz unitaria, pues $tau3_{estadistico}>tau3_{critico}$,$phi3:$  se rechaza la segunda la hipotesis nula, es decir que existe una raiz unitaria y hay trend, pues $phi3_{estadistico}>phi3_{critico}$,$phi2:$  no se rechaza la segunda la tercera nula, es decir que existe una raiz unitaria y no hay trend y podria haber o no drift, pues $phi2_{estadistico}<phi2_{critico}$
+
+
+```{r}
+s.autoUrca(Canada[,4],"trend",1,analysis = F)
+```
+
+Para el  **Desempleo**, con un nivel de significancia del $5\%$ para un modelo tipo **"trend"**, $tau3:$ no se rechaza la primera la hipotesis nula, es decir que existe una raiz unitaria, pues $tau3_{estadistico}>tau3_{critico}$,$phi3:$  no se rechaza la segunda la hipotesis nula, es decir que existe una raiz unitaria y no hay trend, pues $phi3_{estadistico}<phi3_{critico}$,$phi2:$  no se rechaza la tercera la hipotesis nula, es decir que existe una raiz unitaria y no hay trend y no hay drift, pues $phi2_{estadistico}<phi2_{critico}$

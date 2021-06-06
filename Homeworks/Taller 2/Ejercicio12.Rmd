@@ -1,0 +1,112 @@
+---
+output: word_document
+---
+
+
+12.	La Inversión en Estado Unidos, presenta el siguiente comportamiento. 
+
+```{r}
+LAG <- seq(1:12)
+AC <- c(0.963,0.916,0.863,0.811,0.759,0.704,0.645,0.580,0.511,0.437,0.361,0.288)
+Qstat <- c(91.476,186.54,266.38,337.52,400.57,455.35,501.74,539.77,569.60,591.62,606.86,616.62)
+prob <-rep(0,12)
+
+tabla <- cbind(LAG,AC,Qstat,prob)
+tabla <- as.data.frame(tabla)
+head(tabla)
+```
+
+•	Haga un análisis de la gráfica.
+
+
+```{r}
+barplot(AC, ylim=c(-1,1), main = "Gráfica de autocorrelación", xlab="lags", ylab="Autocorrelación")
+
+```
+La gráfica de la autocorrelación muestra una decaimiento paulatino lo cual es un indicativo de la existencia de una tendencia en nuestra seria de tiempo, lo que sugiere la  estacionalidad y un modelo AR(p).
+
+
+•	Compruebe la hipótesis de raíz unitaria
+
+Para el **Ljung-Box** test tenemos que:
+
++ $H_0:$ La serie es aleatoria o es un ruido blanco o es i.i.d.
++ $H_a:$ La serie exhibe una correlación serial, es decir no es aleatoria.
+
+
+Rechazamos la hipótesis nula y decimos que el modelo muestra falta de ajuste si:
+
+$Q> \chi_{1-\alpha}^2,h$
+
+El valor encontrado en la tabla de distribución chi-cuadrado para el nivel
+de significación α y h grados de libertad.
+
+Para nuestro caso, suponiendo que "h = 1", pues es un modelo AR(3).
+
+
+$616.62 >>> \chi_{1-0.05}^2,12$
+
+
+Por lo que se rechaza $H_0$ en favor de $H_a$, la serie exhibe 
+una correlación serial no aleatoria. Es decir que no es un ruido blanco o puede
+presentar una raíz unitaria, siendo esta serie no estacionaria.
+
+
+•	Escriba la ecuación que se utiliza para hacer la prueba de ADF.
+
+
+Como no se cuentan con los datos del PACF, por simplicidad diremos que es un modelo AR(3) 
+
+Para este caso tendriamos que el modelo AR(3) esta dado por:
+
+$$AR(3): y_t = \theta_1 y_{t-1} + \theta_2y_{t-2} + \theta_3y_{t-3} +\varepsilon_t  $$
+
+
+
+Con raíz unitaria:
+
+$$\theta(1) =  1-\theta_1 - \theta_2-\theta_3 = 0$$
+
+Re escribiendo AR(3):
+
+$$\Delta y_t = (\theta_1-1)y_{t-1} + \theta_2y_{t-2} + \theta_3y_{t-3} + \varepsilon_t$$
+
+luego al $\pm \theta_3y_{t-2}$ a ambos lados:
+
+$$ = (\theta_1-1)y_{t-1} + (\theta_2-\theta_3)y_{t-2} - \theta_3(y_{t-2} - y_{t-3}) + \varepsilon_t$$
+luego al $\pm (\theta_2+\theta_3)y_{t-1}$ a ambos lados:
+
+$$ = (\theta_1+\theta_2+\theta_3 -1)y_{t-1} + (\theta_2+\theta_3)(y_{t-1}-y_{t-2}) - \theta_3(y_{t-2} - y_{t-3}) + \varepsilon_t$$
+
+Con:
+
+$$\delta = (\theta_1+\theta_2+\theta_3 -1)$$
+$\beta_1 = (y_{t-1}-y_{t-2})$ y  $\beta_2 = \theta_2$
+
+Por otro lado $\Delta y_1 = (y_{t-1}-y_{t-2})$, $\Delta y_2 = (y_{t-2}-y_{t-3})$
+
+
+Finalmente tenemos que:
+
+
+$$\Delta y_t = \mu + \delta y_{t-1} + \beta_1\Delta y_{t-1} + \beta_2\Delta y_{t-2} + \varepsilon_t$$
+Entonces el operador Lag sobre la ecuación original :
+
+Con $L = y_{t-1}$
+
+$$AR(3): y_t = \mu  +  \theta_1 L + \theta_2L^2 + \theta_{3}L^{3} +\varepsilon_t  $$
+
+
+$$AR(3): y_t = \theta_1 + 4\theta_2 + 27\theta_{3} +\varepsilon_t  $$
+
+Y en su forma re-escrita para la aplicación del **ADF**:
+
+$$\Delta y_t = \mu + \delta L + \beta_1(L-L^2) + \beta_2(L^2-L^3) + \varepsilon_t$$
+
+Según los datos entregados tenemos que:
+
+$$\Delta y_t = \mu + \delta L - 3\beta_1 - 23\beta_2 + \varepsilon_t$$
+
+En este caso la raiz unitaria existe si $\delta = 0$ ó $-\delta = 0$.
+
+Es decir  $H_0: \delta = 0$ vs.  $H_a: \delta <0$

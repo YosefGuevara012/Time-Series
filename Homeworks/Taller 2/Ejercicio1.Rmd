@@ -18,7 +18,7 @@ sig=diag(2)
 
 ```
 
-Estas función proporciona una función de densidad y un generador de números aleatorios para la distribución normal multivariante con media igual a la media y matriz de covarianza sigma.
+Esta  proporciona una función de densidad y un generador de números aleatorios para la distribución normal multivariante con media definida y matriz de covarianza igual a sigma.
 
 ```{r}
 # Establece una semilla para que el código sea reproducibles
@@ -32,33 +32,29 @@ colnames(x) <- c("Serie 1", "Serie 2")
 MTSplot(x)
 
 ```
-Luego de ello podemos realizar el cálculo de las matrices de correlación cruzada de la muestra CCMp, bajo  un intervalo de confianza del 95%.
+Luego de ello podemos realizar el cálculo de las matrices de correlación cruzada mediante el comando CCM, bajo  un intervalo de confianza del 95%.
+Donde en los casos para en que la correlación está por debajo de los
+límites no existe correlación entre las variables para esos
+rezagos pues se acepta la hipótesis nula de que la correlación es igual a cero.
+
 
 ```{r}
 ccm(x)
 ```
 
 También podemos comprobarlo detectando la existencia de una dependencia dinámica lineal en la Data. Mediante la prueba Ljung-Box, en la cual:
-Ho: Los residuales se distribuyen de forma independiente, la correlación de los datos es 0
-Ha: Los residuales no se distribuyen de forma independiente, los datos muestran una correlación serial.
+
+$H_o:$ Los residuales se distribuyen de forma independiente, la correlación de los datos es 0
+$H_a:$ Los residuales no se distribuyen de forma independiente, los datos muestran una correlación serial.
 
 ```{r}
-# Prueba Ljung-Box
-# Ho: Los datos se distribuyen de forma independiente la correclacion de los datos es 0.
-# Ha: Los datos no se distribuyen de forma independiente.
 
 LB <- mq(x, lag = 10)
 
 ```
 
-El valor p de la prueba es superior a 0,05, por lo que se rechaza la hipótesis nula para todos los lag, esto significa que los residuales de nuestro modelo son independientes.
+Los valores p $Q_k(m)$ de la prueba son superiores a 0.05, confirmado que hay hay cero CCM. Por lo que no se rechaza la hipótesis nula para todos los lag, esto significa que los residuales de nuestro modelo son independientes.
 
-```{r}
-plot(x[,1],main = "Prueba gráfica de raíz unitaria", xlab = "Tiempo", ylab="Serie 1", type = "l")
-abline(h = c(0,1.95, -2.2), col = c("darkgreen", "blue", "blue"),
-                      lty = c(1,2, 2), lwd = c(1,1, 1))
-```
-$$H_0:\:\rho \:\:=\:1\:\:y\:\:H_a:\:\rho \:<\:1\:$$
 
 
 

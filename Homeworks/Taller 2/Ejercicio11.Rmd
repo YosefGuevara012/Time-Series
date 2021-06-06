@@ -65,7 +65,7 @@ Es usado para comprobar si una serie de observaciones a lo largo del tiempo son 
 
 Por lo tanto, una observación de las ventas mensuales en un año podría estar correlacionada con una observación de las ventas mensuales 12 meses después. Antes de elegir un modelo, se debe evaluar la autocorrelación de las diferencias mensuales de las ventas.
 
-
+El estadístico Q de Ljung-Box (LBQ) comprueba la hipótesis nula de que las autocorrelaciones hasta el rezago $k$ son iguales a cero (es decir, los valores de los datos son aleatorios e independientes hasta un determinado número de rezagos, en este caso 12). Si el LBQ es mayor que un valor crítico especificado, las autocorrelaciones de uno o más rezagos pueden ser significativamente diferentes de cero, lo que indica que los valores no son aleatorios e independientes a lo largo del tiempo.
 
 + **Tendencia estocástica:** 
 
