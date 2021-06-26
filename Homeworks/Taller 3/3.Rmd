@@ -1,0 +1,39 @@
+---
+output: html_notebook
+---
+
+
+3.Haga una simulación de un VARMA(2,1)
+
+
+```{r}
+
+p1=matrix(c(.816,-1.116,-.623,1.074),2,2)
+p2=matrix(c(-.643,.615,.592,-.133),2,2)
+phi=cbind(p1,p2)
+t1=matrix(c(0,-.801,-1.248,0),2,2)
+Sig=matrix(c(4,2,2,5),2,2)
+   
+```
+
+
+a)	 Genere 500 muestras del modelo VARMA(2,(1). 
+
+```{r}
+m1=VARMAsim(400,arlags=c(1,2),malags=c(1),phi=phi,
+                theta=t1,sigma=Sig)
+```
+
+
+b)	Ajuste el modelo VARMA(2,1))
+c)	Escriba los modelos ajustados
+d)	Interprete la FACE de los residuos.
+
+```{r}
+   zt=m1$series
+   m2=Eccm(zt,maxp=5,maxq=6)
+```
+
+
+
+

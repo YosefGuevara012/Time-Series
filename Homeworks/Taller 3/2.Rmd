@@ -1,0 +1,64 @@
+---
+output: word_document
+---
+
+2.	Considere los retornos mensuales del portafolio 1,2, y 5 de Enero 1961 a  Septiembre 2011. (Nombre: m-dec15678-6111.txt )
+
+Se carga la libreria.
+```{r}
+library(MTS)
+```
+
+
+Se cargan el  DataSet
+```{r}
+da=read.table("m-dec15678-6111.txt",header=T)
+head(da)
+```
+
+```{r}
+x=log(da[,2:6]+1)*100
+rtn=cbind(x$dec1,x$dec5,x$dec8)
+tdx=c(1:612)/12+1961
+par(mfrow=c(3,1))
+plot(tdx,rtn[,1],type="l",xlab="year",ylab="d1")
+plot(tdx,rtn[,2],type="l",xlab="year",ylab="d5")
+plot(tdx,rtn[,3],type="l",xlab="year",ylab="d8")
+```
+
+```{r}
+ccm(rtn)
+```
+
+
+a) Especifique un modelo VMA para el retorno 
+
+```{r}
+zt <- rtn
+VMAorder(zt,lag=20)
+```
+
+Según la prueba de lungxxxxxx los primero 12 lags son significativos
+
+
+b)  Haga la estimación del modelo con MV. 
+
+```{r}
+model <- VMA(rtn, q = 1)
+```
+```{r}
+m2 <- VMA(rtn, q = 2)
+```
+
+
+c)   Refine el modelo para una t mayor   1.645. 
+
+```{r}
+refVMA(model, thres = 1.645)
+
+```
+
+
+d)   Escriba el modelo ajustado
+e)   Use el modelo para pronosticar los retornos
+f)   Obtenga los intervalos de confianza del 95%. 
