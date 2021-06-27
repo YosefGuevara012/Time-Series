@@ -20,20 +20,110 @@ Sig=matrix(c(4,2,2,5),2,2)
 a)	 Genere 500 muestras del modelo VARMA(2,(1). 
 
 ```{r}
-m1=VARMAsim(400,arlags=c(1,2),malags=c(1),phi=phi,
+set.seed(123)
+m1=VARMAsim(500,arlags=c(1,2),malags=c(1),phi=phi,
                 theta=t1,sigma=Sig)
+```
+
+```{r}
+zt = m1$series
+```
+
+```{r}
+par(mfrow=c(2,1))
+plot(zt[,1],type="l",xlab="index",ylab="V1")
+plot(zt[,2],type="l",xlab="index",ylab="V2")
 ```
 
 
 b)	Ajuste el modelo VARMA(2,1))
+
+```{r}
+m2 = VARMA(zt,p=2,q=1)
+```
+$$z_t=\begin{bmatrix}
+-0.025\\-0.022 
+\end{bmatrix}+\begin{bmatrix}
+0.798  & -0.582 \\ 
+-1.222 & 1.099
+\end{bmatrix}z_{t-1}+\begin{bmatrix}
+-0.622 & 0.550 \\ 
+ 0.687 & -0.158
+\end{bmatrix}z_{t-2} + a_t - \begin{bmatrix}
+-0.040 & -1.151\\ 
+-0.826 & 0.009
+\end{bmatrix}a_{t-1},\hat{\sum}_a = \begin{bmatrix}
+3.915 & 1.952\\ 
+1.952 & 5.269 \\ 
+\end{bmatrix}$$
+
 c)	Escriba los modelos ajustados
+
+```{r}
+m2a = refVARMA(m2,thres=0.8)
+```
+$$z_t=\begin{bmatrix}
+0\\
+0 
+\end{bmatrix}+\begin{bmatrix}
+0.818  & -0.634 \\ 
+-1.183 & 1.085
+\end{bmatrix}z_{t-1}+\begin{bmatrix}
+-0.668 & 0.592 \\ 
+ 0.647 & -0.150
+\end{bmatrix}z_{t-2} + a_t - \begin{bmatrix}
+0.00 & -1.21\\ 
+-0.774 & 0.00
+\end{bmatrix}a_{t-1},\hat{\sum}_a = \begin{bmatrix}
+3.946 & 1.967\\ 
+1.967 & 5.276\\ 
+\end{bmatrix}$$
+
+```{r}
+m2b = refVARMA(m2a,thres=1)
+```
+$$z_t=\begin{bmatrix}
+0\\
+0 
+\end{bmatrix}+\begin{bmatrix}
+0.818  & -0.634 \\ 
+-1.183 & 1.085
+\end{bmatrix}z_{t-1}+\begin{bmatrix}
+-0.668 & 0.592 \\ 
+ 0.647 & -0.150
+\end{bmatrix}z_{t-2} + a_t - \begin{bmatrix}
+0.00 & -1.21\\ 
+-0.774 & 0.00
+\end{bmatrix}a_{t-1},\hat{\sum}_a = \begin{bmatrix}
+3.946 & 1.967\\ 
+1.967 & 5.276\\ 
+\end{bmatrix}$$
+```{r}
+m2c = refVARMA(m2b,thres=1)
+```
+$$z_t=\begin{bmatrix}
+0\\
+0 
+\end{bmatrix}+\begin{bmatrix}
+0.818  & -0.634 \\ 
+-1.183 & 1.085
+\end{bmatrix}z_{t-1}+\begin{bmatrix}
+-0.668 & 0.592 \\ 
+ 0.647 & -0.150
+\end{bmatrix}z_{t-2} + a_t - \begin{bmatrix}
+0.00 & -1.21\\ 
+-0.774 & 0.00
+\end{bmatrix}a_{t-1},\hat{\sum}_a = \begin{bmatrix}
+3.946 & 1.967\\ 
+1.967 & 5.276\\ 
+\end{bmatrix}$$
+
 d)	Interprete la FACE de los residuos.
 
 ```{r}
-   zt=m1$series
-   m2=Eccm(zt,maxp=5,maxq=6)
+zt=m1$series
+m2=Eccm(zt,maxp=5,maxq=6)
 ```
-
 
 
 

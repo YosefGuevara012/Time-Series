@@ -41,24 +41,79 @@ VMAorder(zt,lag=20)
 Según la prueba de lungxxxxxx los primero 12 lags son significativos
 
 
+
 b)  Haga la estimación del modelo con MV. 
 
-```{r}
-model <- VMA(rtn, q = 1)
-```
-```{r}
-m2 <- VMA(rtn, q = 2)
-```
 
+```{r}
+VMAe1 <- VMAe(rtn, q = 1)
+```
+El modelo estimado esta dado por:
 
+$$z_t =\begin{bmatrix}
+0.72
+\\0.92 
+\\0.98
+\end{bmatrix}+ a_t - \begin{bmatrix}
+0.08 & -0.26 & 0.12\\ 
+0.10 & -0.54  & 0.26\\ 
+0.12 & -0.72  & 0.35
+\end{bmatrix}a_{t-1}, \hat{\sum}_a = \begin{bmatrix}
+18.21 & 19.76 & 21.14 \\ 
+19.77 & 29.54 & 32.70 \\ 
+21.14 & 32.70 & 39.01
+\end{bmatrix}$$
 c)   Refine el modelo para una t mayor   1.645. 
 
 ```{r}
-refVMA(model, thres = 1.645)
+r.VMAe1 <- refVMAe(VMAe1, thres = 1.645)
 
 ```
 
 
 d)   Escriba el modelo ajustado
+
+El modelo refinado esta dado por:
+
+$$z_t =\begin{bmatrix}
+0.715
+\\0.918 
+\\0.982
+\end{bmatrix}+ a_t - \begin{bmatrix}
+0 & -0.126  & 0.000\\ 
+0 & -0.387  & 0.133\\ 
+0 & -0.548  & 0.208
+\end{bmatrix}a_{t-1}, \hat{\sum}_a = \begin{bmatrix}
+18.376 & 19.941 & 21.328 \\ 
+19.941 & 29.725 & 33.898 \\ 
+21.328 & 32.898 & 39.223
+\end{bmatrix}$$
+
+
+
+
 e)   Use el modelo para pronosticar los retornos
 f)   Obtenga los intervalos de confianza del 95%. 
+
+```{r}
+library(portes)
+```
+
+
+```{r}
+
+k <- 2
+n <- 300
+trunc.lag <-  50   
+phi <-  array(c(0.5,0.4,0.1,0.5),dim=c(k,k,1))
+theta <-  array(c(0,0.25,0,0),dim=c(k,k,1))
+sigma <- matrix(c(1,0.71,0.71,2),k,k)
+p <- ifelse(is.null(phi),0,dim(phi)[3])
+q <- ifelse(is.null(theta),0,dim(theta)[3])
+r <- max(p, q)
+d <- trunc.lag + r
+psi <- ImpulseVMA(phi = phi, theta = theta, trunc.lag = trunc.lag)
+a <- t(crossprod(chol(sigma),matrix(rnorm(k*d),ncol=d)))
+vma.sim(psi = psi, a = a)
+```
+
