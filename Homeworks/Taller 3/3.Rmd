@@ -5,7 +5,14 @@ output: html_notebook
 
 3.Haga una simulación de un VARMA(2,1)
 
+Se carga la libreria
+```{r}
+library(MTS)
+```
 
+Se establecen los parametros del modelo VARMA(2,1), que tiene la forma:
+
+$$z_t = \phi_1 z_{t-1} + \phi_2 z_{t-2} + a_t - \theta_1 a_{t-1}$$
 ```{r}
 
 p1=matrix(c(.816,-1.116,-.623,1.074),2,2)
@@ -16,8 +23,25 @@ Sig=matrix(c(4,2,2,5),2,2)
    
 ```
 
+Cuyos parametros son:
 
-a)	 Genere 500 muestras del modelo VARMA(2,(1). 
+$$\phi_1 =\begin{bmatrix}
+0.816 & -0.623\\ 
+-1.116 & 1.074
+\end{bmatrix},\phi_2 =\begin{bmatrix}
+-0.643 & 0.592\\ 
+0.615 & -0.133
+\end{bmatrix},\theta_1 =\begin{bmatrix}
+0 & -1.248\\ 
+-0.801 & 0
+\end{bmatrix}, {\sum}_a =\begin{bmatrix}
+4 & 2\\ 
+2 & 5
+\end{bmatrix}$$
+
+a)	 Genere 500 muestras del modelo VARMA(2,1). 
+
+Se establece una semilla para que sea posible replicar los resultados de la simulación, esta simulación se lleva a cabo con 500 muestras.
 
 ```{r}
 set.seed(123)
@@ -25,22 +49,30 @@ m1=VARMAsim(500,arlags=c(1,2),malags=c(1),phi=phi,
                 theta=t1,sigma=Sig)
 ```
 
+A continuación se extraen los valores de las series calculadas por la simulación.
+
 ```{r}
 zt = m1$series
 ```
 
+Luego de esto se visualizan las series simuladas.
 ```{r}
 par(mfrow=c(2,1))
-plot(zt[,1],type="l",xlab="index",ylab="V1")
-plot(zt[,2],type="l",xlab="index",ylab="V2")
+plot(zt[,1],type="l",xlab="index",ylab="S1")
+plot(zt[,2],type="l",xlab="index",ylab="S2")
 ```
 
 
 b)	Ajuste el modelo VARMA(2,1))
 
+Para ajustar el modelo VARMA utilizamos el siguiente comando. Donde XXXXXXX
+
 ```{r}
 m2 = VARMA(zt,p=2,q=1)
 ```
+
+Al ajustar nuestro modelo tenemos que esta dado por:
+
 $$z_t=\begin{bmatrix}
 -0.025\\-0.022 
 \end{bmatrix}+\begin{bmatrix}
@@ -59,13 +91,12 @@ $$z_t=\begin{bmatrix}
 
 c)	Escriba los modelos ajustados
 
+Al refinar el modelo VARMA  poniendo a cero estimaciones insignificantes
+
 ```{r}
 m2a = refVARMA(m2,thres=0.8)
 ```
 $$z_t=\begin{bmatrix}
-0\\
-0 
-\end{bmatrix}+\begin{bmatrix}
 0.818  & -0.634 \\ 
 -1.183 & 1.085
 \end{bmatrix}z_{t-1}+\begin{bmatrix}

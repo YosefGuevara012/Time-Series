@@ -16,104 +16,177 @@ da=read.table("m-dec15678-6111.txt",header=T)
 head(da)
 ```
 
+
+Se crea una lista que contiene los deciles 1,5 y 8 de los portafolios que 
+contienen los retornos acciones de las bolsas NYSE, AMEX, y NASDAQ.Cuyos valores
+son transformados mediante logaritmos
 ```{r}
 x=log(da[,2:6]+1)*100
+
+```
+
+Se crea una matriz que contiene los retornos de los deciles 1,5 y 8
+
+```{r}
+
 rtn=cbind(x$dec1,x$dec5,x$dec8)
+```
+
+Luego de ello se genera un vector que actuara como indice temporal, 
+que ira desde 1961 a 2012, donde cada año es dividido en 12 meses. 
+
+```{r}
 tdx=c(1:612)/12+1961
+```
+
+Posterior a ello se gráfican los logaritmos de los rendimientos mensuales.
+
+```{r}
+
 par(mfrow=c(3,1))
 plot(tdx,rtn[,1],type="l",xlab="year",ylab="d1")
 plot(tdx,rtn[,2],type="l",xlab="year",ylab="d5")
 plot(tdx,rtn[,3],type="l",xlab="year",ylab="d8")
+
 ```
+a) Especifique un modelo VMA para el retorno 
+
+Para el identificar el orden del modelo primero calcularemos la correlación-cruzada de los retornos
 
 ```{r}
 ccm(rtn)
 ```
+Gracias al gráfico de correlación cruzada de los retornos se aprecia una dependencia significativa dinámica en el **lag-1**, lo cual es un primer indicativo que un modelo **VMA(1)** seria el apropiado para estas series.No obstante se resalta que la prueba **Ljung-Box** los **lag-5** y **lag-8** tambien poseen cierta significancia.
 
 
-a) Especifique un modelo VMA para el retorno 
+A continuación se usan los retornos para crear a **zt** y correr el comando **VMAorder**, para especificar el orden del proceso VMA usando la prueba **Ljung-Box**
 
 ```{r}
 zt <- rtn
 VMAorder(zt,lag=20)
 ```
 
-Según la prueba de lungxxxxxx los primero 12 lags son significativos
-
-
+Podemos ver que se los $Q_k(1,20),...,Q_k(12,20)$, son significativos al $5%$, por lo cual los resultados no son concluyentes, sin embargo al como parte del principio de parsimonia y apoyados sobre los resultados de la correlación-cruzada, se determina que el orden del modelo es **VMA(1)**.
 
 b)  Haga la estimación del modelo con MV. 
 
+Para este punto se utiliza el comando VMA para estimar el modelo usando
+verosilimutd condicional Gaussiana donde $q=1$, representa el orden de nuestro modelo.
 
 ```{r}
-VMAe1 <- VMAe(rtn, q = 1)
+VMA1 <- VMA(zt, q = 1)
 ```
-El modelo estimado esta dado por:
+Podemos decir entonces que el modelo estimado por verosimilitd condicional
+Gaussiana esta dado por:
 
 $$z_t =\begin{bmatrix}
 0.72
 \\0.92 
 \\0.98
 \end{bmatrix}+ a_t - \begin{bmatrix}
-0.08 & -0.26 & 0.12\\ 
-0.10 & -0.54  & 0.26\\ 
-0.12 & -0.72  & 0.35
+0.080  & -0.263   & 0.126\\ 
+0.104  & -0.536   & 0.261\\ 
+0.121  & -0.718  & 0.348
 \end{bmatrix}a_{t-1}, \hat{\sum}_a = \begin{bmatrix}
-18.21 & 19.76 & 21.14 \\ 
-19.77 & 29.54 & 32.70 \\ 
-21.14 & 32.70 & 39.01
+18.214 & 19.765 & 21.138 \\ 
+19.765 & 29.541 & 32.700 \\ 
+21.138 & 32.700 & 39.001
 \end{bmatrix}$$
+
+
+
+
 c)   Refine el modelo para una t mayor   1.645. 
 
+Haciendo uso del comando **refVMA** se refinara el modelo haciendo $0$ a todos aquellos parametros no significativos (inferiores) para un umbral de  $1.645$.
+
 ```{r}
-r.VMAe1 <- refVMAe(VMAe1, thres = 1.645)
+r.VMA <- refVMA(VMA1, thres = 1.645)
 
 ```
 
 
 d)   Escriba el modelo ajustado
 
-El modelo refinado esta dado por:
+El modelo refinado esta dado entonces por:
 
 $$z_t =\begin{bmatrix}
 0.715
 \\0.918 
 \\0.982
 \end{bmatrix}+ a_t - \begin{bmatrix}
-0 & -0.126  & 0.000\\ 
-0 & -0.387  & 0.133\\ 
-0 & -0.548  & 0.208
+0 & 0.0127  &   0.000\\ 
+0 & 0.2604  & -0.274\\ 
+0 & 0.3177  & -0.370
 \end{bmatrix}a_{t-1}, \hat{\sum}_a = \begin{bmatrix}
-18.376 & 19.941 & 21.328 \\ 
-19.941 & 29.725 & 33.898 \\ 
-21.328 & 32.898 & 39.223
+18.467 & 20.245 & 21.732 \\ 
+20.245 & 30.781 & 34.316 \\ 
+21.733 & 34.321 & 41.127
 \end{bmatrix}$$
 
 
 
-
 e)   Use el modelo para pronosticar los retornos
+
+```{r}
+prd.VMA <- VMApred(r.VMA)
+```
+**Tabla comparativa entre los el promedio del retorno y su estimado**
+
+
+
+| Decil | Promedio retorno | Promedio predicción | % de diferencia |
+|-------|------------------|---------------------|-----------------|
+| dec1  | 0.7143           | 0.7165              | 0.308           |
+| dec5  | 0.9171           | 0.8994              | 1.94            |
+| dec8  | 0.9805           | 0.9521              | 2.89            |
+
+
+**Tabla comparativa entre la desviación estándar del retorno y su estimado**
+
+| Decil | sd retorno | sd predicción | % de diferencia |
+|-------|------------|---------------|-----------------|
+| dec1  | 4.297      | 4.294         | 0.070           |
+| dec5  | 5.548      | 5.536         | 0.216           |
+| dec8  | 6.413      | 6.418         | 0.070           |
+
+
+Se aprecia fatalmente que que la diferencia entre los valores estimados para el
+vector $\mu$, como la desviación estandár $\sigma$, no superan el $5%$ de diferencia, 
+por lo que es posible hablar de nuestro modelo estimado se ajsuta correctamente a un proceso $VMA$ para los retornos de las acciones de las bolsas NYSE, AMEX, y NASDAQ entre 1961 y 2012.
+
 f)   Obtenga los intervalos de confianza del 95%. 
 
+Los intervalos de confianza del 95% para nuestro modelo están dados por:
+
+
+**Limite superior**.
 ```{r}
-library(portes)
-```
 
+upper<-prd.VMA$pred+1.96*prd
+upper
+```
+**Limite inferior**.
 
 ```{r}
 
-k <- 2
-n <- 300
-trunc.lag <-  50   
-phi <-  array(c(0.5,0.4,0.1,0.5),dim=c(k,k,1))
-theta <-  array(c(0,0.25,0,0),dim=c(k,k,1))
-sigma <- matrix(c(1,0.71,0.71,2),k,k)
-p <- ifelse(is.null(phi),0,dim(phi)[3])
-q <- ifelse(is.null(theta),0,dim(theta)[3])
-r <- max(p, q)
-d <- trunc.lag + r
-psi <- ImpulseVMA(phi = phi, theta = theta, trunc.lag = trunc.lag)
-a <- t(crossprod(chol(sigma),matrix(rnorm(k*d),ncol=d)))
-vma.sim(psi = psi, a = a)
-```
 
+
+lower<-prd.VMA$pred-1.96*prd.VMA$se
+lower
+
+```
+**Tabla de intervalos de confianza para los retornos**.
+
+| Decil | Estimado | Inferior 95% | Superior 95% |
+|-------|----------|--------------|--------------|
+| dec1  | 0.714    | -7.706       | 9.139        |
+| dec5  | 0.917    | -9.975       | 11.774       |
+| dec8  | 0.981    | -11.617      | 13.522       |
+
+
+En otras palabras:
+
+ + El $95%$ de los retornos estará entre $-7.706$ y $9.139$ para el decil 1.
+ + El $95%$ de los retornos estará entre $-9.975$ y $11.774 $ para el decil 5.
+ + El $95%$ de los retornos estará entre $-11.617$ y $13.522 $ para el decil 8.
