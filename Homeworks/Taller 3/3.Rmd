@@ -1,9 +1,9 @@
 ---
-output: word_document
+output: html_notebook
 ---
 
 
-3.Haga una simulación de un VARMA(2,1)
+3.Haga una simulación de un modelo VARMA(2,1)
 
 Se carga la libreria
 ```{r}
@@ -98,7 +98,7 @@ Haciendo uso del comando **refVARMA** se refinara el modelo haciendo $0$ a todos
 ```{r}
 m2a = refVARMA(m2,thres=0.8)
 ```
-El modelo refinado **m2a** del modelo ***m1** con $thres=0.8$ esta dado por:
+El modelo refinado **m2a** del modelo **m1** con $thres=0.8$ esta dado por:
 
 $$z_t=\begin{bmatrix}
 0.818  & -0.634 \\ 
@@ -117,7 +117,7 @@ $$z_t=\begin{bmatrix}
 ```{r}
 m2b = refVARMA(m2a,thres=1)
 ```
-El modelo refinado **m2b** del modelo ***m2a** con $thres=1$ esta dado por:
+El modelo refinado **m2b** del modelo **m2a** con $thres=1$ esta dado por:
 
 
 $$z_t=\begin{bmatrix}
@@ -139,7 +139,7 @@ $$z_t=\begin{bmatrix}
 ```{r}
 m2c = refVARMA(m2b,thres=1)
 ```
-El modelo refinado **m2c** del modelo ***m2b** con $thres=1$ esta dado por:
+El modelo refinado **m2c** del modelo **m2b** con $thres=1$ esta dado por:
 
 $$z_t=\begin{bmatrix}
 0\\
@@ -158,7 +158,7 @@ $$z_t=\begin{bmatrix}
 1.967 & 5.276\\ 
 \end{bmatrix}$$
 
-**Tabla comparativa de los criterios de información de los modelos VARMA**
+**Tabla comparativa de los criterios de información de los modelos VARMA(2,1)**
 
 
 | Modelo  | AIC  | BIC  | Umbral      |
@@ -180,7 +180,7 @@ Para calcular los residuales FACE se calcula las matrices de correlación cruzad
 zt=m1$series
 m2=Eccm(zt,maxp=5,maxq=6)
 ```
-**Tabla de valores p de dos vías para una serie temporal VARMA(2,1) de dos dimensiones**
+**Tabla de comportamiento asintótico de valores p de dos vías para una serie temporal VARMA(2,1) de dos dimensiones**
 
 | orden AR  |           orden MA               |
 |-----------|---|---|---|----------|---|---|---|

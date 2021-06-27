@@ -1,5 +1,5 @@
 ---
-output: word_document
+output: html_notebook
 ---
 
 2.	Considere los retornos mensuales del portafolio 1,2, y 5 de Enero 1961 a  Septiembre 2011. (Nombre: m-dec15678-6111.txt )
@@ -15,7 +15,6 @@ Se cargan el  DataSet
 da=read.table("m-dec15678-6111.txt",header=T)
 head(da)
 ```
-
 
 Se crea una lista que contiene los deciles 1,5 y 8 de los portafolios que 
 contienen los retornos acciones de las bolsas NYSE, AMEX, y NASDAQ.Cuyos valores
@@ -163,7 +162,8 @@ Los intervalos de confianza del 95% para nuestro modelo están dados por:
 **Limite superior**.
 ```{r}
 
-upper<-prd.VMA$pred+1.96*prd
+upper<-prd.VMA$pred+1.96*prd.VMA$se
+
 upper
 ```
 **Limite inferior**.
@@ -176,17 +176,17 @@ lower<-prd.VMA$pred-1.96*prd.VMA$se
 lower
 
 ```
-**Tabla de intervalos de confianza para los retornos**.
+**Tabla de intervalos de confianza del 95 % para los retornos**.
 
-| Decil | Estimado | Inferior 95% | Superior 95% |
-|-------|----------|--------------|--------------|
-| dec1  | 0.714    | -7.706       | 9.139        |
-| dec5  | 0.917    | -9.975       | 11.774       |
-| dec8  | 0.981    | -11.617      | 13.522       |
+| Decil | Estimado |Lim. Inferior  | Lim. Superior|
+|-------|----------|---------------|--------------|
+| dec1  | 0.714    | -7.706        | 9.139        |
+| dec5  | 0.917    | -9.975        | 11.774       |
+| dec8  | 0.981    | -11.617       | 13.522       |
 
 
 En otras palabras:
 
- + El $95%$ de los retornos estará entre $-7.706$ y $9.139$ para el decil 1.
- + El $95%$ de los retornos estará entre $-9.975$ y $11.774 $ para el decil 5.
- + El $95%$ de los retornos estará entre $-11.617$ y $13.522 $ para el decil 8.
+ + El $95$% de los retornos estará entre $-7.706$ y $9.139$ para el decil 1.
+ + El $95$% de los retornos estará entre $-9.975$ y $11.774$ para el decil 5.
+ + El $95$% de los retornos estará entre $-11.617$ y $13.522$ para el decil 8.
