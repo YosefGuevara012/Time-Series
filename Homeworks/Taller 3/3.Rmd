@@ -1,5 +1,5 @@
 ---
-output: html_notebook
+output: word_document
 ---
 
 
@@ -65,7 +65,7 @@ plot(zt[,2],type="l",xlab="index",ylab="S2")
 
 b)	Ajuste el modelo VARMA(2,1))
 
-Para ajustar el modelo VARMA utilizamos el siguiente comando. Donde XXXXXXX
+Para ajustar el modelo VARMA utilizamos el siguiente comando. Donde $p$ es el orden del modelo autoregresivo y $q$ es el orden del modelo de promedio móvil.  
 
 ```{r}
 m2 = VARMA(zt,p=2,q=1)
@@ -89,13 +89,17 @@ $$z_t=\begin{bmatrix}
 1.952 & 5.269 \\ 
 \end{bmatrix}$$
 
+Podemos ver con claridad que las diferencias entre las matrices $\phi_1$, $\phi_2$,  $\theta_1$ y $sigma$ son minimas, por lo que se puede hablar que existe un buen ajuste del modelo
+
 c)	Escriba los modelos ajustados
 
-Al refinar el modelo VARMA  poniendo a cero estimaciones insignificantes
+Haciendo uso del comando **refVARMA** se refinara el modelo haciendo $0$ a todos aquellos parámetros no significativos (inferiores) para un umbral de  $0.8$. Este modelo se refinara multiples veces para verificar la calidad del mismo mediante el uso de los criterios de información $AIC$ y $BIC$.
 
 ```{r}
 m2a = refVARMA(m2,thres=0.8)
 ```
+El modelo refinado **m2a** del modelo ***m1** con $thres=0.8$ esta dado por:
+
 $$z_t=\begin{bmatrix}
 0.818  & -0.634 \\ 
 -1.183 & 1.085
@@ -113,6 +117,9 @@ $$z_t=\begin{bmatrix}
 ```{r}
 m2b = refVARMA(m2a,thres=1)
 ```
+El modelo refinado **m2b** del modelo ***m2a** con $thres=1$ esta dado por:
+
+
 $$z_t=\begin{bmatrix}
 0\\
 0 
@@ -132,6 +139,8 @@ $$z_t=\begin{bmatrix}
 ```{r}
 m2c = refVARMA(m2b,thres=1)
 ```
+El modelo refinado **m2c** del modelo ***m2b** con $thres=1$ esta dado por:
+
 $$z_t=\begin{bmatrix}
 0\\
 0 
@@ -149,12 +158,39 @@ $$z_t=\begin{bmatrix}
 1.967 & 5.276\\ 
 \end{bmatrix}$$
 
+**Tabla comparativa de los criterios de información de los modelos VARMA**
+
+
+| Modelo  | AIC  | BIC  | Umbral      |
+|---------|------|------|-------------|
+| m1      | 2.87 | 2.99 | Sin refinar |
+| m2a     | 2.87 | 2.95 | 0.8         |
+| m2b     | 2.87 | 2.95 | 1           |
+| m2c     | 2.87 | 2.95 | 1           |
+
+
+Esta tabla nos permite apreciar que no existe ningún cambio en los valores de las matrices $\phi_1$, $\phi_2$,  $\theta_1$ y $sigma$ asi como en los criterios $AIC$ o $BIC$ al refinar el modelo multiples veces. No obstante si existe una clara diferencia entre el modelo refinado y el no refinado como lo muestra la ecuación estimada del modelo **VARMA** y el criterio $BIC$
+
+
 d)	Interprete la FACE de los residuos.
+
+Para calcular los residuales FACE se calcula las matrices de correlación cruzada extendidas y la tabla asociada de dos vías de valores p de las estadísticas Ljung-Box de nuestra serie simulada.Donde $maxp$ es el orden máximo del orden **AR** y $maxq$ es el orden máximo del orden **MA**.
 
 ```{r}
 zt=m1$series
 m2=Eccm(zt,maxp=5,maxq=6)
 ```
+**Tabla de valores p de dos vías para una serie temporal VARMA(2,1) de dos dimensiones**
+
+| orden AR  |           orden MA               |
+|-----------|---|---|---|----------|---|---|---|
+| p         | 0 | 1 | 2 | 3        | 4 | 5 | 6 |
+| 0         | X | X | X | X        | X | X | X |
+| 1         | X | X | X | X        | X | X | X |
+| 2         | X | O | O | O        | O | O | O |
+| 3         | X | O | O | O        | O | O | O |
+| 4         | X | O | O | O        | O | O | O |
+| 5         | X | O | O | O        | O | O | O |
 
 
-
+Esta tabla muestra el patrón asintótico del modelo VARMA(2,1), donde $X$ de nota un valor significativo y $O$ un valor no significativo. Se aprecia con claridad que el modelo es un **VARMA(2,1)**, pues los valores significativos de para los procesos **AR** ocupan las primeras 2 filas y los valores significativos del proceso **MA** ocupan la primera columna.
