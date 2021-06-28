@@ -45,10 +45,22 @@ m1=VMA(rtn,q=1)
 ```
 
 
+
 ```{r}
 r1=m1$residuals
 mq(r1,adj=4)
 ```
+
+```{r}
+
+ref.m1 <- refVMA(m1, thres=1.87)
+
+```
+
+```{r}
+eigen(ref.m1$Theta)$values
+```
+
 
 ```{r}
 m2=VMAe(rtn,q=1)

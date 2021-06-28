@@ -30,6 +30,6 @@ plot(res, cex = 0.8, select = "contrib 5", title="Dim 1 vs Dim 2",habillage = "c
 plot(res, cex = 0.8, select = "contrib 5", title="Dim 2 vs Dim 3", axes=2:3,habillage = "cos2")
 ```
 ```{r}
-plot(res, cex = 0.8, select = "contrib 5", title="Dim 3 vs Dim 4", axes=3:4,habillage = "cos2")
+plot(res, cex = 0.8, select = "contrib 5", title="Dim 1 vs Dim 3", axes = c(1, 3),habillage = "cos2")
 ```
 

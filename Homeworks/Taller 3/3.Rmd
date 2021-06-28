@@ -193,4 +193,4 @@ m2=Eccm(zt,maxp=5,maxq=6)
 | 5         | X | O | O | O        | O | O | O |
 
 
-Esta tabla muestra el patrón asintótico del modelo VARMA(2,1), donde $X$ de nota un valor significativo y $O$ un valor no significativo. Se aprecia con claridad que el modelo es un **VARMA(2,1)**, pues los valores significativos de para los procesos **AR** ocupan las primeras 2 filas y los valores significativos del proceso **MA** ocupan la primera columna.
+Esta tabla muestra el patrón asintótico del modelo VARMA(2,1), donde $X$ de nota un valor significativo y $O$ un valor no significativo. Se aprecia con claridad que el modelo es un **VARMA(2,1)**, pues los valores significativos de para los procesos **AR** ocupan las primeras 2 filas y los valores significativos del proceso **MA** ocupan la primera columna, es decir que el primer $0$ o valor no significativo se encuentra en la fila $2$ columna $1$.
