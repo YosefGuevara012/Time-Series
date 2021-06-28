@@ -136,18 +136,18 @@ prd.VMA <- VMApred(r.VMA)
 
 | Decil | Promedio retorno | Promedio predicción | % de diferencia |
 |-------|------------------|---------------------|-----------------|
-| dec1  | 0.7143           | 0.7165              | 0.308           |
-| dec5  | 0.9171           | 0.8994              | 1.94            |
-| dec8  | 0.9805           | 0.9521              | 2.89            |
+| dec1  | 0.7143           | 0.7165              | 0.003           |
+| dec5  | 0.9171           | 0.8994              | 0.019           |
+| dec8  | 0.9805           | 0.9521              | 0.028           |
 
 
 **Tabla comparativa entre la desviación estándar del retorno y su estimado**
 
 | Decil | sd retorno | sd predicción | % de diferencia |
 |-------|------------|---------------|-----------------|
-| dec1  | 4.297      | 4.294         | 0.070           |
-| dec5  | 5.548      | 5.536         | 0.216           |
-| dec8  | 6.413      | 6.418         | 0.070           |
+| dec1  | 4.297      | 4.294         | 0.000           |
+| dec5  | 5.548      | 5.536         | 0.002           |
+| dec8  | 6.413      | 6.418         | 0.000           |
 
 
 Se aprecia fatalmente que que la diferencia entre los valores estimados para el

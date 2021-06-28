@@ -1,0 +1,35 @@
+---
+output: html_notebook
+---
+
+
+```{r}
+library(FactoMineR)
+```
+
+```{r}
+hungria <- read.csv("viruela.csv", header=T, sep=";")
+head(hungria)
+```
+
+```{r}
+res <- PCA(hungria[,2:11])
+```
+
+```{r}
+
+sum.res<-summary(res)
+
+```
+```{r}
+plot(res, cex = 0.8, select = "contrib 5", title="Dim 1 vs Dim 2",habillage = "cos2")
+```
+
+
+```{r}
+plot(res, cex = 0.8, select = "contrib 5", title="Dim 2 vs Dim 3", axes=2:3,habillage = "cos2")
+```
+```{r}
+plot(res, cex = 0.8, select = "contrib 5", title="Dim 3 vs Dim 4", axes=3:4,habillage = "cos2")
+```
+
