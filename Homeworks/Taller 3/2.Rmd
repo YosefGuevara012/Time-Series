@@ -1,5 +1,5 @@
 ---
-output: html_notebook
+output: word_document
 ---
 
 2.	Considere los retornos mensuales del portafolio 1,2, y 5 de Enero 1961 a  Septiembre 2011. (Nombre: m-dec15678-6111.txt )

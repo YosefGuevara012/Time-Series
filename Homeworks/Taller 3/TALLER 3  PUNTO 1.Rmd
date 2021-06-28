@@ -1,0 +1,222 @@
+---
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(lubridate)
+library(vars)
+library(tseries)
+library(ppcor)
+library(TSA)
+library(forecast)
+library(ggplot2)
+library(urca)
+library(xtable)
+```
+
+1.	Encuentre un vector de series de tiempo multivariado con m ≥ 10. 
+•	Construya el modelo de componentes principales con covarianza muestral y correlación muestral.
+•	Haga un reporte de análisis, incluyendo el código.
+
+CODIGO PROFE DE: Multivariate Time Series Analysis and Applications William W S Wei 
+
+Cargue de base de datos
+
+La base a continuación muestra los datos de contagios de varicela en 10 condados de Hungria. 522 semanas.Arrancando la medición el 3 de enero de 2005 y termina el 29 de diciembre de 2014
+
+```{r}
+varic <- read.csv("VIRUOK.csv", header = TRUE,sep=";")
+varic<-as.data.frame(varic)
+
+```
+
+```{r}
+mvaric<-ts(varic,freq=365.25/7,start=decimal_date(ymd("2005-01-03")))
+head(mvaric)
+tail(mvaric)
+#str(mvaric)
+#summary(mvaric)
+plot(mvaric,  main = "Series temporales: Varicela ")
+```
+
+Matriz de covarianzas actual : Esta es la matriz que se debe minimizar.
+```{r}
+cov(mvaric)
+
+```
+Matriz de corelaciones
+```{r}
+
+chin<-cor(mvaric)
+chin
+xtable(chin)
+```
+Observamos que todas las corelaciones son  superiores a 0.4 , esto nos da indicios de corelaciones de fuerza media entre las series de casos de varicela por condado.
+
+Ejecución de PCA
+
+Sin corelacion:
+
+```{r}
+
+pca <- princomp(mvaric,cor=F)
+pca
+lds <- pca$loadings
+lds
+```
+Podemos observar 10 componentes del modelo :
+Podemos apreciar que en la primera componente todos los alfa son positivos y mayores a 0.19 , y tenemos participación de todas los condados .
+En la segunda componente desaparece el condado de Baranya y de Bacs , y empezamos a ver algunos componentes con alfas negativos ( la gran mayoria) Para el componente 3 , desaparecen los condados de Budapest y Bekes .
+
+Las 3 ecuaciones de componentes son las siguientes:
+
+
+
+```{r}
+ screeplot(pca,type="lines",main="Grafico cp")
+
+```
+Podemos ver la proporcion en que cada componente explica la varianza total :El quiebre de el grafico de componentes principales permite determinar que el quiebre está en el tercer componente.
+Calculamos para este modelo la varianza y con estas los porcentajes de la varianza total
+
+```{r}
+varpca<-(pca$sdev)^2
+vtpca<-sum(varpca)
+popca<-varpca/vtpca
+varpca
+vtpca
+popca
+```
+Usando el principio de Paretto , podemos decidir solamente tomar los componentes del modelo de analisis por componentes principales hasta donde el total de la varianza sea igual al 80 % , en este caso se tomaria hasta la componente numero4 , que suma 82.84% de la varianza (63.44+9.41+5.66+4.44) . Pero , por el principio de parsimonia , y recordando la conclusión del grafico anterior ,tomaremos solamente hasta la componente numero 3 , es decir representariamos el 78.44 % de la varianza total.
+
+
+con Correlacion:
+
+```{r}
+pca2 <- princomp(mvaric,cor=T)
+pca2
+lds <- pca2$loadings
+lds
+scs <- pca2$scores
+screeplot(pca2,type="lines",main="screeplot")
+```
+Podemos ver la proporcion en que cada componente explica la varianza total :El quiebre de el grafico de componentes principales permite determinar que el quiebre está en el tercer o cuarto  componente.
+```{r}
+varpca2<-(pca2$sdev)^2
+vtpca2<-sum(varpca2)
+popca2<-varpca2/vtpca2
+varpca2
+vtpca2
+popca2
+```
+Usando el principio de Paretto , podemos decidir solamente tomar los componentes del modelo de analisis por componentes principales hasta donde el total de la varianza sea igual al 80 % , en este caso se tomaria hasta la componente numero 3 , que suma 72.06% de la varianza (58.23+7.55+6.28) . 
+
+Grafico Sectores por los primeros dos loadings
+Sacar los 3 pares de graficos C1-C2 , C2-C3 , C1-C3
+
+```{r}
+
+              
+C <- as.data.frame(cbind(lds[,1],lds[,2]))
+C
+ggplot(C,aes(C[,1],C[,2],label=rownames(C))) +
+ geom_point(size=4,col=3) +
+ geom_text(vjust=0,hjust=0,angle = 10,size=5) +
+ xlab("Loading 1") +
+ ylab("Loading 2")
+              
+```
+Los grupos que logramos identificar son:
+1.Bacs , Heaves y Baranya.
+2. Jadu ,Fejer y Borsod
+Budapest ,Gyor y Csongrad son condados que no pertenecen a ningun cluster como tal. Este ultimo condado se puede observar que aporta en gran medida a el loading 2 , mas no al loading 1, mientras que budapest aporte a ambos en alta cantidad , y Gyor aporta mas a el loading 1 que el loading 2.
+
+```{r}
+
+C <- as.data.frame(cbind(lds[,2],lds[,3]))
+C
+ggplot(C,aes(C[,1],C[,2],label=rownames(C))) +
+ geom_point(size=4,col=3) +
+ geom_text(vjust=0,hjust=0,angle = 10,size=5) +
+ xlab("Loading 2") +
+ ylab("Loading 3")
+
+```
+El cluster mas notorio en este plano  es Heves , Borsod ,Gyor ,Fejer y Hajdu.
+
+Se puede observar igualmente que Csongrad aporta tanto para el loading 2 como para el loading 3
+             
+```{r}
+
+C <- as.data.frame(cbind(lds[,1],lds[,3]))
+C
+ggplot(C,aes(C[,1],C[,2],label=rownames(C))) +
+ geom_point(size=4,col=3) +
+ geom_text(vjust=0,hjust=0,angle = 10,size=5) +
+ xlab("Loading 1") +
+ ylab("Loading 3")
+
+ C <- as.data.frame(cbind(scs[,1],scs[,2]))
+              palette(rainbow(400))
+              ggplot(C,aes(C[,1],C[,2],label=substring(rownames(C),1,4))) +
+                geom_path() +
+                geom_point(size=4,col=1:nrow(C)) +
+                geom_text(vjust=0,hjust=0,angle = 10,size=5) +
+                xlab("Scoring 1") +
+                ylab("Scoring 2")
+              palette("default")
+```
+
+Se observan los siguientes grupos:
+1. Borsod , Hajdu , Budapest , Baranya y Fejer.
+2. Csongrad y Beres
+El condado de gyor aporta mucho al eje numero 1 pero no al eje numero 3
+
+Grafico  Series de tiempo por scores sobre las dos primeras 2 componentes 
+```{r}
+
+
+ C <- as.data.frame(cbind(scs[,1],scs[,2]))
+              palette(rainbow(400))
+              ggplot(C,aes(C[,1],C[,2],label=substring(rownames(C),1,4))) +
+                geom_path() +
+                geom_point(size=4,col=1:nrow(C)) +
+                geom_text(vjust=0,hjust=0,angle = 10,size=5) +
+                xlab("Scoring 1") +
+                ylab("Scoring 2")
+              palette("default")
+```
+```{r}
+
+
+ C <- as.data.frame(cbind(scs[,2],scs[,3]))
+              palette(rainbow(400))
+              ggplot(C,aes(C[,1],C[,2],label=substring(rownames(C),1,4))) +
+                geom_path() +
+                geom_point(size=4,col=1:nrow(C)) +
+                geom_text(vjust=0,hjust=0,angle = 10,size=5) +
+                xlab("Scoring 1") +
+                ylab("Scoring 2")
+              palette("default")
+```
+```{r}
+
+
+ C <- as.data.frame(cbind(scs[,1],scs[,3]))
+              palette(rainbow(400))
+              ggplot(C,aes(C[,1],C[,2],label=substring(rownames(C),1,4))) +
+                geom_path() +
+                geom_point(size=4,col=1:nrow(C)) +
+                geom_text(vjust=0,hjust=0,angle = 10,size=5) +
+                xlab("Scoring 1") +
+                ylab("Scoring 2")
+              palette("default")
+```
+
+
+
+
