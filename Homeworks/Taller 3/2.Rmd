@@ -190,3 +190,6 @@ En otras palabras:
  + El $95$% de los retornos estará entre $-7.706$ y $9.139$ para el decil 1.
  + El $95$% de los retornos estará entre $-9.975$ y $11.774$ para el decil 5.
  + El $95$% de los retornos estará entre $-11.617$ y $13.522$ para el decil 8.
+ 
+ 
+ Estos intervalos de confianza son bastantes amplios debido a que la desviación estandar es grandes para cada valor de $\mu$.

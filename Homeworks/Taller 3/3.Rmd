@@ -98,7 +98,8 @@ Haciendo uso del comando **refVARMA** se refinara el modelo haciendo $0$ a todos
 ```{r}
 m2a = refVARMA(m2,thres=0.8)
 ```
-El modelo refinado **m2a** del modelo **m1** con $thres=0.8$ esta dado por:
+
+El modelo refinado **m2a** del modelo **m1** con $thres=0.8$, por lo cual todos los coeficientes que tengan un $t value$ menor a $0.8$ serán reducidos a $0$ esta dado por:
 
 $$z_t=\begin{bmatrix}
 0.818  & -0.634 \\ 
@@ -117,13 +118,11 @@ $$z_t=\begin{bmatrix}
 ```{r}
 m2b = refVARMA(m2a,thres=1)
 ```
+
 El modelo refinado **m2b** del modelo **m2a** con $thres=1$ esta dado por:
 
 
 $$z_t=\begin{bmatrix}
-0\\
-0 
-\end{bmatrix}+\begin{bmatrix}
 0.818  & -0.634 \\ 
 -1.183 & 1.085
 \end{bmatrix}z_{t-1}+\begin{bmatrix}
@@ -139,12 +138,10 @@ $$z_t=\begin{bmatrix}
 ```{r}
 m2c = refVARMA(m2b,thres=1)
 ```
+
 El modelo refinado **m2c** del modelo **m2b** con $thres=1$ esta dado por:
 
 $$z_t=\begin{bmatrix}
-0\\
-0 
-\end{bmatrix}+\begin{bmatrix}
 0.818  & -0.634 \\ 
 -1.183 & 1.085
 \end{bmatrix}z_{t-1}+\begin{bmatrix}
@@ -169,18 +166,18 @@ $$z_t=\begin{bmatrix}
 | m2c     | 2.87 | 2.95 | 1           |
 
 
-Esta tabla nos permite apreciar que no existe ningún cambio en los valores de las matrices $\phi_1$, $\phi_2$,  $\theta_1$ y $sigma$ asi como en los criterios $AIC$ o $BIC$ al refinar el modelo multiples veces. No obstante si existe una clara diferencia entre el modelo refinado y el no refinado como lo muestra la ecuación estimada del modelo **VARMA** y el criterio $BIC$
+Esta tabla nos permite apreciar que no existe ningún cambio en los valores de las matrices $\phi_1$, $\phi_2$,  $\theta_1$ y $sigma$,pues el **thres=1** establecido es muy bajo y todos los valores para el modelo refinado son significativos, por lo que no tiene sentido incrementarlo. No obstante los criterios de información muestran que existe una pequeña diferencia entre el modelo **refinado** y el **no refinado** como lo muestra la ecuación estimada del modelo **VARMA** y el criterio $BIC$
 
 
 d)	Interprete la FACE de los residuos.
 
-Para calcular los residuales FACE se calcula las matrices de correlación cruzada extendidas y la tabla asociada de dos vías de valores p de las estadísticas Ljung-Box de nuestra serie simulada.Donde $maxp$ es el orden máximo del orden **AR** y $maxq$ es el orden máximo del orden **MA**.
+Para calcular el FACE se calcula la matrices de correlación cruzada extendidas y la tabla asociada de dos vías de valores p de las estadísticas Ljung-Box de nuestra serie simulada.Donde $maxp$ es el orden máximo del orden **AR** y $maxq$ es el orden máximo del orden **MA**.
 
 ```{r}
 zt=m1$series
 m2=Eccm(zt,maxp=5,maxq=6)
 ```
-**Tabla de comportamiento asintótico de valores p de dos vías para una serie temporal VARMA(2,1) de dos dimensiones**
+**Tabla de comportamiento asintótico de valores p de dos vías para una serie temporal VARMA(2,1) de dos dimensiones del modelo**
 
 | orden AR  |           orden MA               |
 |-----------|---|---|---|----------|---|---|---|
@@ -194,3 +191,25 @@ m2=Eccm(zt,maxp=5,maxq=6)
 
 
 Esta tabla muestra el patrón asintótico del modelo VARMA(2,1), donde $X$ de nota un valor significativo y $O$ un valor no significativo. Se aprecia con claridad que el modelo es un **VARMA(2,1)**, pues los valores significativos de para los procesos **AR** ocupan las primeras 2 filas y los valores significativos del proceso **MA** ocupan la primera columna, es decir que el primer $0$ o valor no significativo se encuentra en la fila $2$ columna $1$.
+
+Si este proceso se repite sobre los residuales de uno del modelo refinado.
+
+
+```{r}
+rsd <- m2a$residuals
+Eccm(rsd, maxp = 5, maxq = 6)
+```
+
+Donde se ve evidencia no existe una correlación entre los residuales, pues todos los valores no son significativos al ser ellos mayores que $0.05$, es decir los residuales son independientes entre sí.
+
+**Tabla de comportamiento asintótico de valores p de dos vías para una serie temporal VARMA(2,1) de dos dimensiones de los residuales**
+
+| orden AR  |           orden MA               |
+|-----------|---|---|---|----------|---|---|---|
+| p         | 0 | 1 | 2 | 3        | 4 | 5 | 6 |
+| 0         | O | O | O | O        | O | O | O |
+| 1         | O | O | O | O        | O | O | O |
+| 2         | O | O | O | O        | O | O | O |
+| 3         | O | O | O | O        | O | O | O |
+| 4         | O | O | O | O        | O | O | O |
+| 5         | O | O | O | O        | O | O | O |
