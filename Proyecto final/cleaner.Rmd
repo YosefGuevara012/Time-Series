@@ -1,0 +1,220 @@
+---
+output: html_notebook
+---
+
+Lectura de los datos.
+
+```{r}
+crypto <- read.csv("crypto.csv", header= T, sep = ",")
+crypto$Date <- as.Date(crypto$Date, tryFormats = "%d/%m/%Y")
+head(crypto)
+```
+
+```{r}
+acciones <- read.csv("acciones.csv", header= T, sep = ",")
+acciones$Date <- as.Date(acciones$Date, tryFormats = "%d/%m/%Y")
+head(acciones)
+```
+
+Crypto monedas desde el 1 de noviembre.
+
+```{r}
+crypto1 <- subset(crypto, Date >= "2017-11-01")
+head(crypto1)
+```
+
+acciones desde el 1 de noviembre.
+
+
+```{r}
+
+acciones1 <- subset(acciones, Date >= "2017-11-01")
+head(acciones1)
+
+```
+
+```{r}
+
+c
+
+```
+
+
+```{r}
+t <- proc.time()
+combined<- c()
+
+for(i in 1:nrow(acciones)){
+  
+  
+  for(j in 1:nrow(crypto)){
+    
+    if(acciones[i,]$Date == crypto[j,]$Date){
+      
+      combined <- rbind(combined,crypto[j,])
+      
+      
+    }
+
+  }
+  
+}
+proc.time()-t
+
+```
+
+```{r}
+
+con <- cbind(combined, acciones[,-1])
+head(con)
+```
+
+
+```{r}
+write.table(con, file="Data.csv", sep = ",")
+```
+
+```{r}
+electricity <- read.csv("electricity.csv", header = T, sep=",")
+electricity$Date <- as.Date(electricity$Date, tryFormats = "%Y-%m-%d")
+head(electricity)
+```
+
+
+```{r}
+t <- proc.time()
+conbined2<- c()
+
+for(i in 1:nrow(acciones)){
+  
+  
+  for(j in 1:nrow(electricity)){
+    
+    if(acciones[i,]$Date == electricity[j,]$Date){
+      
+      conbined2 <- rbind(conbined2,electricity[j,])
+      
+      
+    }
+
+  }
+  
+}
+proc.time()-t
+
+```
+
+```{r}
+con2 <- cbind(conbined2, con[,-1])
+head(con2)
+```
+
+```{r}
+write.table(con2, file="Data2.csv", sep = ",")
+```
+
+```{r}
+library(parallel)
+detectCores()
+```
+
+
+
+```{r}
+
+fechas <- function(tm1, tm2){
+  
+# size must be nrow(tm1) < nrow(tm2)  
+
+filtered<- c()
+
+for(i in 1:nrow(tm1)){
+  
+  
+  for(j in 1:nrow(tm2)){
+    
+    if(tm1[i,]$Date == tm2[j,]$Date){
+      
+      filtered <- rbind(filtered,tm2[j,])
+      
+      
+    }
+
+  }
+  
+} 
+  
+}
+
+
+```
+
+
+```{r}
+crypto.f <- mclapply(acciones,crypto,fechas, mc.cores = 4)
+```
+
+```{r}
+library(MTS)
+```
+```{r}
+cry <- read.csv("crypto2.csv", header = T, sep=",")
+head(cry)
+```
+```{r}
+MTSplot(cry[,2:7])
+```
+```{r}
+MTSplot(cry[,8:13])
+```
+
+```{r}
+MTSplot(cry[,14:19])
+```
+```{r}
+library(FactoMineR)
+```
+```{r}
+str(con2)
+```
+
+```{r}
+cry <- read.csv("Data3.csv", header = T, sep=",")
+cry$bitcoin<-as.numeric(cry$bitcoin)
+cry$ethereum<-as.numeric(cry$ethereum)
+cry$cardano<-as.numeric(cry$cardano)
+cry$doge<-as.numeric(cry$doge)
+cry$bitcoin.cash<-as.numeric(cry$bitcoin.cash)
+cry$stellar<-as.numeric(cry$stellar)
+cry$chainlink<-as.numeric(cry$chainlink)
+cry$biance<-as.numeric(cry$biance)
+cry$monero<-as.numeric(cry$monero)
+cry$bat<-as.numeric(cry$bat)
+cry$tether<-as.numeric(cry$tether)
+cry$little<-as.numeric(cry$little)
+head(cry)
+```
+```{r}
+library(FactoMineR)
+```
+
+
+```{r}
+pca <- PCA(cry[,-1])
+```
+```{r}
+summary(pca)
+```
+
+
+```{r}
+write.table(cry, file="2017.csv", sep = ",")
+```
+
+```{r}
+cor(cry[,-1])
+```
+```{r}
+typeof(cry$doge)
+```
+
