@@ -1,0 +1,38 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(FactoMineR)
+```
+
+
+```{r}
+data1 <- read.csv("crypto.csv", header = T, sep =",")
+pca<-PCA(data1[,-1:-2])
+summary(pca)
+
+```
+
+```{r}
+data1 <- read.csv("2015.csv", header = T, sep =",")
+pca1<-PCA(data1[,-1:-2])
+summary(pca1)
+
+```
+
+```{r}
+data2 <- read.csv("2017.csv", header = T, sep =",")
+pca2<-PCA(data2[,-1:-2])
+summary(pca2)
+
+```
+```{r}
+data3 <- read.csv("2021.csv", header = T, sep =",")
+pca3<-PCA(data3[,-1:-2])
+summary(pca2)
+
+```
+
