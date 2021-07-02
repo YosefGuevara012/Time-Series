@@ -1,4 +1,4 @@
-# Mutivariate TimeSeries
+# Mutivariate Time Series
 
 
 This repository contains all the homeworks, exercises adn the project for the multivariate time series (MTS) imparted by the Colombian National University conducted by Hector Manuel Zarate Solano.
