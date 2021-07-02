@@ -1,11 +1,11 @@
-# Mutivariate TimeSeries
+# Mutivariate Time Series
 
 
-This repository contains all the homeworks, exercises adn the project for the multivariate time series (MTS) imparted by the Colombian National University conducted by Hector Manuel Zarate Solano.
+This repository contains all the homeworks, exercises and the project for the multivariate time series (MTS) imparted by the Colombian National University conducted by Hector Manuel Zarate Solano.
 
 ## Description
 
-This repository contains all the homeworks, exercises adn the project for the multivariate time series (MTS) using the (MTS) library based on the book Ruey S. TSAY and the Factorminer library.
+This repository contains all the homeworks, exercises and the project for the multivariate time series (MTS) using the (MTS) library based on the book Ruey S. TSAY and the Factorminer library.
 
 ## What I learned
 
