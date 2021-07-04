@@ -1,28 +1,72 @@
 ---
-title: "R Notebook"
 output: html_notebook
 ---
 
 
 ```{r}
 library(FactoMineR)
+library(factoextra)
+library(MTS)
+library(ggplot2)
+library(aTSA)
+```
+```{r}
+# funcion de normalización usando el rango
+normalize <- function(x) {
+return ((x - min(x)) / (max(x) - min(x)))
+}
 ```
 
+### Datos Año 2015-2021
 
 ```{r}
-data1 <- read.csv("crypto.csv", header = T, sep =",")
-pca<-PCA(data1[,-1:-2])
+
+data <- read.csv("crypto.csv", header = T, sep =",")
+pca<-PCA(data1[,-1])
 summary(pca)
 
 ```
 
+
+
+
+
+```{r}
+head(data1)
+```
+
+### Datos Año 2015-2027
 ```{r}
 data1 <- read.csv("2015.csv", header = T, sep =",")
-pca1<-PCA(data1[,-1:-2])
-summary(pca1)
+normalizada15 <- as.data.frame(lapply(data1[,-1], normalize))
+pca1<-PCA(data1[,-1])
+summary(data1)
 
 ```
 
+
+```{r}
+#Datos año 2015-2017
+MTSplot(data1[,2:7])
+```
+
+```{r}
+plot(normalizada15[,2],type = "l",col="red", main="Plot de datos normalizados 2015-2017")
+lines(normalizada15[,3],col="blue")
+lines(normalizada15[,4],col="green")
+lines(normalizada15[,5],col="orange")
+lines(normalizada15[,6],col="black")
+lines(normalizada15[,7],col="yellow")
+```
+
+```{r}
+# Correlación datos año 2015-2017
+cor(data1[,-1])
+```
+
+
+
+### Datos Año 2017-2020
 ```{r}
 data2 <- read.csv("2017.csv", header = T, sep =",")
 pca2<-PCA(data2[,-1:-2])
@@ -30,9 +74,53 @@ summary(pca2)
 
 ```
 ```{r}
+#Datos año 2017-2020
+MTSplot(data2[,2:7])
+```
+#Datos año 2020-2021
+```{r}
 data3 <- read.csv("2021.csv", header = T, sep =",")
-pca3<-PCA(data3[,-1:-2])
-summary(pca2)
+pca3<-PCA(data3[,-1])
+summary(pca3)
 
 ```
+
+```{r}
+#Datos año 2020-2021
+MTSplot(data3[,2:7])
+```
+
+
+
+```{r}
+
+## cluster
+res.hcpc <- HCPC(pca3, graph = F, min=4,max=6)
+```
+
+
+
+```{r}
+
+#http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/117-hcpc-hierarchical-clustering-on-principal-components-essentials/
+
+fviz_cluster(res.hcpc,
+             repel = TRUE,            # Avoid label overlapping
+             show.clust.cent = TRUE, # Show cluster centers
+             palette = "jco",         # Color palette see ?ggpubr::ggpar
+             ggtheme = theme_minimal(),
+             main = "Factor map"
+             )
+```
+
+
+
+```{r}
+
+# Normalizando data del 2020-2021
+d3_diff <- as.data.frame(lapply(data3[,-1], diff))
+MTSplot(d3_diff[,1:6])
+```
+
+
 
