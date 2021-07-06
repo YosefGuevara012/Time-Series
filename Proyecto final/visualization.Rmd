@@ -32,7 +32,7 @@ summary(pca)
 
 
 ```{r}
-head(data1)
+head(data)
 ```
 
 ### Datos Año 2015-2027
