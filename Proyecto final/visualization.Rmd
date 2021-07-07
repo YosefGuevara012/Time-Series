@@ -22,13 +22,20 @@ return ((x - min(x)) / (max(x) - min(x)))
 ```{r}
 
 data <- read.csv("crypto.csv", header = T, sep =",")
-pca<-PCA(data1[,-1])
+pca<-PCA(data[,-1])
 summary(pca)
 
 ```
 
 
 
+```{r}
+fviz_pca_var(pca,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+             )
+```
 
 
 ```{r}
@@ -37,7 +44,7 @@ head(data)
 
 ### Datos Año 2015-2027
 ```{r}
-data1 <- read.csv("2015.csv", header = T, sep =",")
+data1 <- read.csv("2015_2.csv", header = T, sep =",")
 normalizada15 <- as.data.frame(lapply(data1[,-1], normalize))
 pca1<-PCA(data1[,-1])
 summary(data1)

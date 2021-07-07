@@ -10,9 +10,11 @@ library(vars)
 
 
 ```{r}
-data <- read.csv("2021.csv", header = T, sep=",")
+data <- read.csv("2015.csv", header = T, sep=",")
 head(data)
 ```
+
+
 
 
 ### Visualización de los datos
@@ -20,16 +22,16 @@ head(data)
 ```{r}
 ##  [1] "#00008B" "#46008B" "#8B008B" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
 ##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
-tiempo <- seq(1:nrow(data))/248+2020.5
+tiempo <- seq(1:nrow(data))/597+2015.5
 par(mfrow=c(2,4))
 plot(tiempo,data[,2], ylab = "Bitcoin", xlab="Tiempo", type="l", col = "#00008B")
-plot(tiempo,data[,3], ylab = "B.Cash", xlab="Tiempo", type="l", col = "#46008B")
-plot(tiempo,data[,4], ylab = "Biance", xlab="Tiempo", type="l", col = "#8B008B")
-plot(tiempo,data[,5], ylab = "Little", xlab="Tiempo", type="l", col = "#8B0046")
-plot(tiempo,data[,6], ylab = "Tesla", xlab="Tiempo", type="l", col = "#8B4500")
-plot(tiempo,data[,7], ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B8B00")
-plot(tiempo,data[,8], ylab = "AMD", xlab="Tiempo", type="l", col = "#468B00")
-plot(tiempo,data[,9], ylab = "Qualcom", xlab="Tiempo", type="l", col = "#008B00")
+plot(tiempo,data[,3], ylab = "Dogecoin", xlab="Tiempo", type="l", col = "#46008B")
+plot(tiempo,data[,4], ylab = "Litecoin", xlab="Tiempo", type="l", col = "#8B008B")
+plot(tiempo,data[,5], ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B0046")
+plot(tiempo,data[,6], ylab = "Nvidia", xlab="Tiempo", type="l", col = "#8B4500")
+plot(tiempo,data[,7], ylab = "Intel", xlab="Tiempo", type="l", col = "#8B8B00")
+plot(tiempo,data[,8], ylab = "Qualcom", xlab="Tiempo", type="l", col = "#468B00")
+
 ```
 
 ### Diferenciación de los datos
@@ -46,32 +48,27 @@ head(d_est)
 
 ```{r}
 #Se visualizan las series en su forma estacionaria.
-tiempo <- seq(1:nrow(d_est))/247+2020.5 
+tiempo <- seq(1:nrow(d_est))/596+2015.5 
 par(mfrow=c(2,4))
 plot(tiempo,d_est[,1], ylab = "Bitcoin", xlab="Tiempo", type="l", col = "#00008B")
-plot(tiempo,d_est[,2], ylab = "B.Cash", xlab="Tiempo", type="l", col = "#46008B")
-plot(tiempo,d_est[,3], ylab = "Biance", xlab="Tiempo", type="l", col = "#8B008B")
-plot(tiempo,d_est[,4], ylab = "Little", xlab="Tiempo", type="l", col = "#8B0046")
-plot(tiempo,d_est[,5], ylab = "Tesla", xlab="Tiempo", type="l", col = "#8B4500")
-plot(tiempo,d_est[,6], ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B8B00")
-plot(tiempo,d_est[,7], ylab = "AMD", xlab="Tiempo", type="l", col = "#468B00")
-plot(tiempo,d_est[,8], ylab = "Qualcom", xlab="Tiempo", type="l", col = "#008B00")
+plot(tiempo,d_est[,2], ylab = "Dogecoin", xlab="Tiempo", type="l", col = "#46008B")
+plot(tiempo,d_est[,3], ylab = "Litecoin", xlab="Tiempo", type="l", col = "#8B008B")
+plot(tiempo,d_est[,4], ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B0046")
+plot(tiempo,d_est[,5], ylab = "Nvidia", xlab="Tiempo", type="l", col = "#8B4500")
+plot(tiempo,d_est[,6], ylab = "Intel", xlab="Tiempo", type="l", col = "#8B8B00")
+plot(tiempo,d_est[,7], ylab = "Qualcom", xlab="Tiempo", type="l", col = "#468B00")
 ```
 ### Test de  causalidad de granger
 
-Solo analizaremos la causalidad en los supuestos:
 
-La cotización de Bitcoin causa al valor de las acciones de TESLA?
-La cotización de Bitcoin causa al valor de las acciones de AMD?
-La cotización de Bitcoin causa al valor de la cotización de Biance?
 
 ```{r}
 
-# TESLA 
+# Dogecoin 
 
 for (i in 1:12){
   
-  gt <- grangertest(tesla ~ bitcoin, order = i, data = d_est)
+  gt <- grangertest(doge ~ bitcoin, order = i, data = d_est)
   
   if(gt[2,4]<0.05){
     
@@ -85,12 +82,11 @@ for (i in 1:12){
 
 ```
 
-La cotización del Bitcoin no causa en el sentido de granger al valor de las acciones de Tesla en todos los 12 rezagos evaluados.
 
 ```{r}
 for (i in 1:12){
   
-  gt <- grangertest(amd ~ bitcoin, order = i, data = d_est)
+  gt <- grangertest(little ~ bitcoin, order = i, data = d_est)
   
   if(gt[2,4]<0.05){
     
@@ -101,24 +97,9 @@ for (i in 1:12){
 }
 ```
 
-La cotización del Bitcoin no causa en el sentido de granger al valor de las acciones de AMD en todos los 12 rezagos evaluados.
+La cotización del Bitcoin  causa en el sentido de granger al valor del litecoin apartir del 5 rezago.
 
 
-```{r}
-for (i in 1:12){
-  
-  gt <- grangertest(biance ~ bitcoin, order = i, data = d_est)
-  
-  if(gt[2,4]<0.05){
-    
-    cat("Bitcoin es causal de la otra variable apartir del rezago: ", i, "\n")
-    break
-    
-  }
-}
-```
-
-La cotización del Bitcoin es causal en el sentido de granger la cotización del Biance apartir del rezago 5.
 
 ### Calculo orden del modelo VAR
 
@@ -133,7 +114,7 @@ Todos los cirteios para seleccionar el numero de rezagos de nuestro modelo nos i
 ```{r}
 
 var_s <- vars::VAR(d_est,p =1)
-var_s
+summary(var_s)
 ```
 Todas las raices del polinomio son menores a 1 por lo que nuestro proceso es estable
 
@@ -183,4 +164,36 @@ Como p-value < 0.05  la varianza de los residuales no es constante
 ```{r}
 MTSplot(var_mts$residuals[,1:6])
 ```
+
+
+
+```{r}
+var_s <- vars::VAR(datos, p =1)
+```
+
+### Prueba de autocorrelación serial
+
+```{r}
+seriala <- serial.test(var_s,lags.pt = 1, type = "PT.asymptotic")
+seriala$serial
+```
+Como p-value < 0.05 los residuales si están correlacionados
+
+### Prueba de Normalidad de los residuales
+
+```{r}
+normalidad <- normality.test(var_s)
+normalidad$jb.mul
+```
+Como p-value < 0.05  de la Kurtosis y el Skewness los residuales no se distribuyen de manera normal.
+
+
+### Prueba de Homocedasticidad de la varianza de los residuales
+
+
+```{r}
+arch1 <- arch.test(var_s, lags.multi = 1)
+arch1$arch.mul
+```
+
 

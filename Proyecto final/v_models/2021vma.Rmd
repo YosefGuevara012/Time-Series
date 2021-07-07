@@ -55,22 +55,6 @@ verosilimutd condicional Gaussiana donde q=1, representa el orden de nuestro mod
 ```{r}
 VMA1 <- VMA(zt, q = 1)
 ```
-Podemos decir entonces que el modelo estimado por verosimilitd condicional
-Gaussiana esta dado por:
-
-$$z_t =\begin{bmatrix}
-0.72
-\\0.92 
-\\0.98
-\end{bmatrix}+ a_t - \begin{bmatrix}
-0.080  & -0.263   & 0.126\\ 
-0.104  & -0.536   & 0.261\\ 
-0.121  & -0.718  & 0.348
-\end{bmatrix}a_{t-1}, \hat{\sum}_a = \begin{bmatrix}
-18.214 & 19.765 & 21.138 \\ 
-19.765 & 29.541 & 32.700 \\ 
-21.138 & 32.700 & 39.001
-\end{bmatrix}$$
 
 
 
@@ -118,7 +102,7 @@ lower
 ### Analisis de los residuales
 
 ```{r}
-mq(r.VMA$residuals, adj=50)
+mq(r.VMA$residuals, adj=20)
 ```
 
 Según la prueba de Lung-Box el orden del modelo es 1

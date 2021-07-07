@@ -1,0 +1,62 @@
+---
+output: word_document
+---
+
+
+```{r}
+library(MTS)
+library(lmtest)
+library(vars)
+```
+
+
+```{r}
+data <- read.csv("2015.csv", header = T, sep=",")
+head(data)
+```
+
+### Diferenciación de los datos
+
+```{r}
+### Se transforman las series a estacionarias
+
+#d_est <- as.data.frame(lapply(data[,-1],log))
+#d_est <- as.data.frame(lapply(d_est,diff))
+d_est <- as.data.frame(lapply(data[,-1],diff))
+head(d_est)
+
+```
+
+
+
+### Ajuste el modelo VARMA(1,1))
+
+Pues tanto el modelo VAR como el VMA fueron de orden 1  
+
+```{r}
+zt <- d_est
+varma = VARMA(zt,p=1,q=1)
+```
+
+
+```{r}
+r.varma = refVARMA(varma,thres=0.8)
+```
+
+
+
+d)	Interprete la FACE de los residuos.
+
+
+```{r}
+zt=varma$series
+m2=Eccm(zt,maxp=5,maxq=6)
+```
+
+
+
+```{r}
+rsd <- m2a$residuals
+Eccm(rsd, maxp = 5, maxq = 6)
+```
+

@@ -1,0 +1,109 @@
+---
+output: html_notebook
+---
+
+```{r}
+library(MTS)
+library(lmtest)
+library(vars)
+```
+
+
+```{r}
+data <- read.csv("2015.csv", header = T, sep=",")
+head(data)
+```
+
+
+### Diferenciación de los datos
+
+```{r}
+### Se transforman las series a estacionarias
+
+#d_est <- as.data.frame(lapply(data[,-1],log))
+#d_est <- as.data.frame(lapply(d_est,diff))
+d_est <- as.data.frame(lapply(data[,-1],diff))
+head(d_est)
+
+```
+
+
+### Modelo VMA para los datos
+
+Para el identificar el orden del modelo primero calcularemos la correlación-cruzada
+
+```{r}
+ccm(d_est)
+```
+Gracias al gráfico de correlación cruzada se aprecia una dependencia significativa dinámica en el de todos los lag con exepcion del 2 y el 4
+
+
+### Orden modelo VMA
+
+```{r}
+zt <- d_est
+VMAorder(zt,lag=12)
+```
+
+Podemos ver que  solo Q_k(1,12) es significativo al 5%, por lo cual los resultados no son concluyentes, sin embargo al como parte del principio de parsimonia y apoyados sobre los resultados de la correlación-cruzada, se determina que el orden del modelo es VMA(12)
+
+### Estimación del modelo con MV. 
+
+Para este punto se utiliza el comando VMA para estimar el modelo usando
+verosilimutd condicional Gaussiana donde q=1, representa el orden de nuestro modelo.
+
+```{r}
+VMA1 <- VMA(zt, q = 1)
+```
+
+
+
+
+c)   Refine el modelo para una t mayor   1.645. 
+
+Haciendo uso del comando refVMA se refinara el modelo haciendo 0 a todos aquellos parametros no significativos (inferiores) para un umbral de  1.5.
+
+```{r}
+r.VMA <- refVMA(VMA1, thres = 1.5)
+
+```
+
+
+
+### Pronostico de las cotizaciones
+
+```{r}
+prd.VMA <- VMApred(r.VMA)
+```
+
+### Intervalos de confianza del 95%. 
+
+Los intervalos de confianza del 95% para nuestro modelo están dados por:
+
+
+**Limite superior**.
+```{r}
+
+upper<-prd.VMA$pred+1.96*prd.VMA$se
+
+upper
+```
+**Limite inferior**.
+
+```{r}
+
+
+
+lower<-prd.VMA$pred-1.96*prd.VMA$se
+lower
+
+```
+
+### Analisis de los residuales
+
+```{r}
+mq(r.VMA$residuals, adj=20)
+```
+
+Según la prueba de Lung-Box el orden del modelo es 1
+

@@ -1,0 +1,281 @@
+---
+output: html_notebook
+---
+
+```{r}
+library(MTS)
+library(lmtest)
+library(vars)
+```
+
+
+```{r}
+data <- read.csv("2021_2.csv", header = T, sep=",")
+head(data)
+```
+
+
+
+
+### Visualización de los datos
+
+```{r}
+##  [1] "#00008B" "#46008B" "#8B008B" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
+##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
+tiempo <- seq(1:nrow(data))/248+2020.5
+par(mfrow=c(2,4))
+plot(tiempo,data[,2], ylab = "Bitcoin", xlab="Tiempo", type="l", col = "#00008B")
+plot(tiempo,data[,3], ylab = "B.Cash", xlab="Tiempo", type="l", col = "#46008B")
+plot(tiempo,data[,4], ylab = "Biance", xlab="Tiempo", type="l", col = "#8B008B")
+plot(tiempo,data[,5], ylab = "Lite", xlab="Tiempo", type="l", col = "#8B0046")
+plot(tiempo,data[,6], ylab = "Tesla", xlab="Tiempo", type="l", col = "#8B4500")
+plot(tiempo,data[,7], ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B8B00")
+plot(tiempo,data[,8], ylab = "AMD", xlab="Tiempo", type="l", col = "#468B00")
+plot(tiempo,data[,9], ylab = "Qualcom", xlab="Tiempo", type="l", col = "#008B00")
+```
+
+### Diferenciación de los datos
+
+```{r}
+### Se transforman las series a estacionarias
+
+#d_est <- as.data.frame(lapply(data[,-1],log))
+#d_est <- as.data.frame(lapply(d_est,diff))
+d_est <- as.data.frame(lapply(data[,-1],diff))
+head(d_est)
+
+```
+
+```{r}
+#Se visualizan las series en su forma estacionaria.
+tiempo <- seq(1:nrow(d_est))/247+2020.5 
+par(mfrow=c(2,4))
+plot(tiempo,d_est[,1], ylab = "Bitcoin", xlab="Tiempo", type="l", col = "#00008B")
+plot(tiempo,d_est[,2], ylab = "B.Cash", xlab="Tiempo", type="l", col = "#46008B")
+plot(tiempo,d_est[,3], ylab = "Biance", xlab="Tiempo", type="l", col = "#8B008B")
+plot(tiempo,d_est[,4], ylab = "Lite", xlab="Tiempo", type="l", col = "#8B0046")
+plot(tiempo,d_est[,5], ylab = "Tesla", xlab="Tiempo", type="l", col = "#8B4500")
+plot(tiempo,d_est[,6], ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B8B00")
+plot(tiempo,d_est[,7], ylab = "AMD", xlab="Tiempo", type="l", col = "#468B00")
+plot(tiempo,d_est[,8], ylab = "Qualcom", xlab="Tiempo", type="l", col = "#008B00")
+```
+### Test de  causalidad de granger
+
+Solo analizaremos la causalidad en los supuestos:
+
+La cotización de Bitcoin causa al valor de las acciones de TESLA?
+La cotización de Bitcoin causa al valor de las acciones de AMD?
+La cotización de Bitcoin causa al valor de la cotización de Biance?
+
+```{r}
+
+# TESLA 
+
+for (i in 1:12){
+  
+  gt <- grangertest(tesla ~ bitcoin, order = i, data = d_est)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("Bitcoin es causal de la otra variable apartir del rezago: ", i, "\n")
+    break
+    
+  }
+}
+
+
+
+```
+
+La cotización del Bitcoin no causa en el sentido de granger al valor de las acciones de Tesla en todos los 12 rezagos evaluados.
+
+```{r}
+for (i in 1:12){
+  
+  gt <- grangertest(amd ~ bitcoin, order = i, data = d_est)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("Bitcoin es causal de la otra variable apartir del rezago: ", i, "\n")
+    break
+    
+  }
+}
+```
+
+La cotización del Bitcoin no causa en el sentido de granger al valor de las acciones de AMD en todos los 12 rezagos evaluados.
+
+
+```{r}
+for (i in 1:12){
+  
+  gt <- grangertest(biance ~ bitcoin, order = i, data = d_est)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("Bitcoin es causal de la otra variable apartir del rezago: ", i, "\n")
+    break
+    
+  }
+}
+```
+
+La cotización del Bitcoin es causal en el sentido de granger la cotización del Biance apartir del rezago 5.
+
+La cotización de TESLA causa al valor cotizado de bitcoin
+
+```{r}
+
+# BITCOIN 
+
+for (i in 1:12){
+  
+  gt <- grangertest(bitcoin ~ tesla, order = i, data = d_est)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("Tesla es causal del bitcoin apartir del rezago: ", i, "\n")
+    break
+    
+  }
+}
+
+
+
+```
+
+### Calculo orden del modelo VAR
+
+```{r}
+
+VARselect(d_est, lag.max=12)
+```
+
+Todos los cirteios para seleccionar el numero de rezagos de nuestro modelo nos indican que el orden del modelo es 1.
+
+### Proceso VAR mediante libreria vars
+```{r}
+
+var_s <- vars::VAR(d_est,p =1)
+var_s
+```
+Todas las raices del polinomio son menores a 1 por lo que nuestro proceso es estable
+
+```{r}
+# plot(var_s)
+```
+
+### Proceso VAR mediante libreria MTS
+
+```{r}
+var_mts <- MTS::VAR(d_est, p =1)
+summary(var_mts)
+```
+### Refinamiento del modelo MTS
+
+```{r}
+var_ref <- MTS::refVAR(var_mts,thres=0.8)
+```
+
+### Prueba de autocorrelación serial
+
+```{r}
+seriala <- serial.test(var_s,lags.pt = 1, type = "PT.asymptotic")
+seriala$serial
+```
+Como p-value < 0.05 los residuales si están correlacionados
+
+### Prueba de Normalidad de los residuales
+
+```{r}
+normalidad <- normality.test(var_s)
+normalidad$jb.mul
+```
+Como p-value < 0.05  de la Kurtosis y el Skewness los residuales no se distribuyen de manera normal.
+
+
+### Prueba de Homocedasticidad de la varianza de los residuales
+
+
+```{r}
+arch1 <- arch.test(var_s, lags.multi = 1)
+arch1$arch.mul
+```
+Como p-value < 0.05  la varianza de los residuales no es constante
+
+
+```{r}
+MTSplot(var_mts$residuals[,1:6])
+```
+
+
+```{r}
+bitcoin <- ts(d_est[,1], frequency = 240, start = c(2020, 100))
+bcash <- ts(d_est[,2], frequency = 240, start = c(2020, 100))
+biance <- ts(d_est[,3], frequency = 240, start = c(2020, 100))
+lite <- ts(d_est[,4], frequency = 240, start = c(2020, 100))
+tesla <- ts(d_est[,5], frequency = 240, start = c(2020, 100))
+tsmc <- ts(d_est[,6], frequency = 240, start = c(2020, 100))
+amd <- ts(d_est[,7], frequency = 240, start = c(2020, 100))
+qualcom <- ts(d_est[,8], frequency = 240, start = c(2020, 100))
+
+```
+
+
+```{r}
+datos <- as.data.frame(cbind(bitcoin,bcash,biance,lite,tesla,tsmc,amd,qualcom))
+head(datos)
+```
+
+
+
+```{r}
+
+for (i in 1:20){
+  
+  gt <- grangertest(qualcom ~ bitcoin, order = i, data = datos)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("Si es causal de orden: ", i, "\n")
+    break
+    
+  }
+}
+
+```
+
+```{r}
+VARselect(datos)
+```
+
+```{r}
+var_s <- vars::VAR(datos, p =1)
+```
+
+### Prueba de autocorrelación serial
+
+```{r}
+seriala <- serial.test(var_s,lags.pt = 1, type = "PT.asymptotic")
+seriala$serial
+```
+Como p-value < 0.05 los residuales si están correlacionados
+
+### Prueba de Normalidad de los residuales
+
+```{r}
+normalidad <- normality.test(var_s)
+normalidad$jb.mul
+```
+Como p-value < 0.05  de la Kurtosis y el Skewness los residuales no se distribuyen de manera normal.
+
+
+### Prueba de Homocedasticidad de la varianza de los residuales
+
+
+```{r}
+arch1 <- arch.test(var_s, lags.multi = 1)
+arch1$arch.mul
+```
+
+
