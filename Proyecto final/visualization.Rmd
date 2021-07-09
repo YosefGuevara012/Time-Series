@@ -36,6 +36,10 @@ fviz_pca_var(pca,
              repel = TRUE     # Avoid text overlapping
              )
 ```
+```{r}
+library(MTS)
+library(vars)
+```
 
 
 ```{r}

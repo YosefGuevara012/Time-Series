@@ -1,0 +1,369 @@
+---
+output: html_notebook
+---
+
+```{r}
+library(MTS)
+library(lmtest)
+library(vars)
+library(forecast)
+library(aTSA)
+```
+
+## Carga de los datos
+
+```{r}
+data <- read.csv("crypto.csv", header = T, sep=",")
+head(data)
+```
+
+
+
+
+## Visualización de los datos
+
+```{r}
+##  [1] "#00008B" "#46008B" "#8B008B" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
+##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
+tiempo <- seq(1:nrow(data))/597+2015.5
+par(mfrow=c(2,3))
+plot(tiempo,data[,2], ylab = "Bitcoin", xlab="Tiempo", type="l", col = "#00008B")
+plot(tiempo,data[,3], ylab = "Ethereum", xlab="Tiempo", type="l", col = "#46008B")
+plot(tiempo,data[,14], ylab = "Tesla", xlab="Tiempo", type="l", col = "#8B008B")
+plot(tiempo,data[,15], ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B0046")
+plot(tiempo,data[,16], ylab = "Nvidia", xlab="Tiempo", type="l", col = "#8B4500")
+plot(tiempo,data[,18], ylab = "AMD", xlab="Tiempo", type="l", col = "#8B8B00")
+
+
+```
+
+```{r}
+##  [1] "#00008B" "#46008B" "#8B008B" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
+##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
+tiempo <- seq(1:nrow(data))/1506+2015.5
+
+plot(tiempo,data[,2], ylab = "Bitcoin", xlab="Tiempo", type="l", col = "#00008B")
+lines(tiempo,data[,3], ylab = "Ethereum", xlab="Tiempo", type="l", col = "#46008B")
+lines(tiempo,data[,14], ylab = "Tesla", xlab="Tiempo", type="l", col = "#8B008B")
+lines(tiempo,data[,15], ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B0046")
+lines(tiempo,data[,16], ylab = "Nvidia", xlab="Tiempo", type="l", col = "#8B4500")
+lines(tiempo,data[,18], ylab = "AMD", xlab="Tiempo", type="l", col = "#8B8B00")
+
+
+```
+
+```{r}
+# funcion de normalización usando el rango
+normalize <- function(x) {
+return ((x - min(x)) / (max(x) - min(x)))
+}
+
+```
+
+## Data normalizada
+
+
+
+```{r}
+data2 <- as.data.frame(lapply(data[,-1],normalize))
+head(data2)
+```
+
+
+```{r}
+##  [1] "#00008B" "#46008B" "#8B008B" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
+##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
+tiempo <- seq(1:nrow(data))/1506+2015.5
+
+plot(tiempo,data2[,2], ylab = "Bitcoin", xlab="Tiempo", type="l", col = "#00008B")
+lines(tiempo,data2[,3], ylab = "Ethereum", xlab="Tiempo", type="l", col = "#46008B")
+lines(tiempo,data2[,14], ylab = "Tesla", xlab="Tiempo", type="l", col = "#8B008B")
+lines(tiempo,data2[,15], ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B0046")
+lines(tiempo,data2[,16], ylab = "Nvidia", xlab="Tiempo", type="l", col = "#8B4500")
+lines(tiempo,data2[,17], ylab = "AMD", xlab="Tiempo", type="l", col = "#8B8B00")
+
+
+```
+## Diferenciación de los datos
+
+```{r}
+## Se transforman las series a estacionarias
+d_est <- data[,-1]
+d_est <- as.data.frame(lapply(d_est,log))
+d_est <- as.data.frame(lapply(d_est,diff))
+#d_est <- as.data.frame(lapply(d_est,diff))
+#d_est <- as.data.frame(lapply(d_est,diff))
+head(d_est)
+
+```
+
+```{r}
+#Se visualizan las series en su forma estacionaria.
+tiempo <- seq(1:nrow(d_est))/1505+2015.5 
+par(mfrow=c(2,3))
+plot(tiempo,d_est$bitcoin, ylab = "Bitcoin", xlab="Tiempo", type="l", col = "#00008B")
+plot(tiempo,d_est$ethereum, ylab = "Ethereum", xlab="Tiempo", type="l", col = "#46008B")
+plot(tiempo,d_est$tesla, ylab = "tesla", xlab="Tiempo", type="l", col = "#8B008B")
+plot(tiempo,d_est$tsmc, ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B0046")
+plot(tiempo,d_est$nvidia, ylab = "Nvidia", xlab="Tiempo", type="l", col = "#8B4500")
+plot(tiempo,d_est$amd, ylab = "AMD", xlab="Tiempo", type="l", col = "#8B8B00")
+
+```
+
+
+
+## Test de  causalidad de granger
+
+### Analisis de cryptho monedas.
+```{r}
+
+head(d_est)
+```
+
+
+```{r}
+
+# Ethereum  
+
+for (i in 1:12){
+  
+  gt <- grangertest(ethereum[-1:-34] ~ bitcoin[-1:-34], order = i, data = d_est)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("Bitcoin es causal de ethereum apartir del rezago: ", i, "\n")
+    break
+    
+  }
+}
+
+
+
+```
+
+
+```{r}
+
+# Dogecoin  
+
+for (i in 1:12){
+  
+  gt <- grangertest(doge ~ bitcoin, order = i, data = d_est)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("Bitcoin es causal de Dogecoin  apartir del rezago: ", i, "\n")
+    break
+    
+  }
+}
+
+
+
+```
+
+
+```{r}
+
+# Monero  
+
+for (i in 1:12){
+  
+  gt <- grangertest(tether[-1:-595] ~ bitcoin[-1:-595], order = i, data = d_est)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("Bitcoin es causal de Monero  apartir del rezago: ", i, "\n")
+    break
+    
+  }
+}
+
+
+
+```
+
+
+### Analisis de Acciones monedas.
+
+```{r}
+
+# tesla  
+
+for (i in 1:12){
+  
+  gt <- grangertest(tesla ~ bitcoin, order = i, data = d_est)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("Bitcoin es causal de tesla apartir del rezago: ", i, "\n")
+    break
+    
+  }
+}
+
+
+```
+
+
+```{r}
+
+# nvidia  
+
+for (i in 1:12){
+  
+  gt <- grangertest(nvidia ~ bitcoin, order = i, data = d_est)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("Bitcoin es causal de nvidia apartir del rezago: ", i, "\n")
+    break
+    
+  }
+}
+
+
+```
+
+```{r}
+
+# tsmc  
+
+for (i in 1:12){
+  
+  gt <- grangertest(tsmc ~ bitcoin, order = i, data = d_est)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("Bitcoin es causal de tsmc apartir del rezago: ", i, "\n")
+    break
+    
+  }
+}
+
+
+```
+
+## Las acciones causan a bitcoin
+
+
+```{r}
+
+# bitcoin ~ tesla  
+
+for (i in 1:12){
+  
+  gt <- grangertest(bitcoin ~ tesla, order = i, data = d_est)
+  
+  if(gt[2,4]<0.05){
+    
+    cat("tesla es causal de bitcoin apartir del rezago: ", i, "\n")
+    break
+    
+  }
+}
+
+
+```
+
+Tesla no causa al bitcoin
+
+
+## Calculo orden del modelo VAR
+
+```{r}
+d_est2 <- d_est[-1:-34,c(1,2,4,10,13,14,15)]
+VARselect(d_est2, lag.max=12)
+```
+
+Todos los criterio para seleccionar el numero de rezagos de nuestro modelo nos indican que el orden del modelo es 1.
+
+## Proceso VAR mediante libreria vars
+```{r}
+
+var_s <- vars::VAR(d_est2,p =1)
+summary(var_s)
+```
+Todas las raices del polinomio son menores a 1 por lo que nuestro proceso es estable
+
+```{r}
+# plot(var_s)
+```
+
+## Proceso VAR mediante libreria MTS
+
+```{r}
+var_mts <- MTS::VAR(d_est2, p =1)
+summary(var_mts)
+```
+## Refinamiento del modelo MTS
+
+```{r}
+var_ref <- MTS::refVAR(var_mts,thres=0.8)
+```
+
+## Prueba de autocorrelación serial
+
+```{r}
+seriala <- serial.test(var_s,lags.pt = 1, type = "PT.asymptotic")
+seriala$serial
+```
+Como p-value < 0.05 los residuales si están correlacionados
+
+## Prueba de Normalidad de los residuales
+
+```{r}
+normalidad <- normality.test(var_s)
+normalidad$jb.mul
+```
+Como p-value < 0.05  de la Kurtosis y el Skewness los residuales no se distribuyen de manera normal.
+
+
+## Prueba de Homocedasticidad de la varianza de los residuales
+
+
+```{r}
+arch1 <- vars::arch.test(var_s, lags.multi = 1)
+arch1$arch.mul
+```
+Como p-value < 0.05  la varianza de los residuales no es constante
+
+
+
+## d_est con teporalidad
+
+```{r}
+
+#d_est$bitcoin <- ts(d_est$bitcoin, frequency =240, start = c(2015,100))
+#d_est$ethereum <- ts(d_est$ethereum, frequency =240, start = c(2015,100))
+#d_est$tesla <- ts(d_est$tesla, frequency =240, start = c(2015,100))
+#d_est$tsmc <- ts(d_est$tsmc, frequency =240, start = c(2015,100))
+#d_est$nvidia <- ts(d_est$nvidia, frequency =240, start = c(2015,100))
+#d_est$amd <- ts(d_est$amd, frequency =240, start = c(2015,100))
+
+```
+
+```{r}
+var_irf <- irf(var_s, response = "ethereum",impulse = "bitcoin",n.ahead = 12, boot=T)
+var_irf 
+```
+
+```{r}
+plot(var_irf)
+```
+### Descomposicion varianza
+
+```{r}
+var_des = fevd(var_s, n.ahead = 12)$bitcoin
+var_des
+```
+```{r}
+VARpred(var_mts,4)
+```
+```{r}
+lapply(d_est2, sd)
+```
+```{r}
+predict(var_s, n.ahead = 4, ci = 0.95)
+```
+
