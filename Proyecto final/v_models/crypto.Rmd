@@ -32,13 +32,13 @@ data2 <- as.data.frame(lapply(data[,-1],normalize))
 head(data2)
 ```
 
-
+### Datos normalizados de las cripto monedas
 ```{r}
 ##  [1] "#00008B" "#46008B" "#8B008B" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
 ##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
-tiempo <- seq(1:nrow(data2))/1506+2015.5
+tiempo <- seq(1:nrow(data2))/240+2015.5
 
-plot(tiempo,data2[,1], ylab = "Cotización normalizada", xlab="años", type="l", col = "red", main ="Bitcoin y otras crypto normalizadas", cex.main=0.8, cex.lab = 0.8)
+plot(tiempo,data2[,1], ylab = "Cotización normalizada", xlab="año", type="l", col = "red", main ="Bitcoin y otras crypto normalizadas", cex.main=0.8, cex.lab = 0.8)
 lines(tiempo,data2[,2], ylab = "Ethereum", xlab="Tiempo", type="l", col = "blue")
 lines(tiempo,data2[,3], ylab = "Cardano", xlab="Tiempo", type="l", col = "green")
 lines(tiempo,data2[,4], ylab = "Dogecoin", xlab="Tiempo", type="l", col = "orange")
@@ -55,51 +55,36 @@ legend("topleft", legend=c("Bitcoin","Ethereum","Cardano","Dogecoin","Bcash","St
 
 
 ```
-
-## Visualización de los Variables seleccionadas.
+### Datos normalizados del bitcoin y el tether
 
 ```{r}
-##  [1] "#00008B" "#46008B" "green" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
-##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
-tiempo <- seq(1:nrow(data))/597+2015.5
-par(mfrow=c(2,3))
-plot(tiempo,data[,2], ylab = "Bitcoin", xlab="Tiempo", type="l", col = "red")
-plot(tiempo,data[,3], ylab = "Ethereum", xlab="Tiempo", type="l", col = "blue")
-plot(tiempo,data[,14], ylab = "Tesla", xlab="Tiempo", type="l", col = "purple")
-plot(tiempo,data[,15], ylab = "TSMC", xlab="Tiempo", type="l", col = "darkgreen")
-plot(tiempo,data[,16], ylab = "Nvidia", xlab="Tiempo", type="l", col = "orange")
-plot(tiempo,data[,18], ylab = "AMD", xlab="Tiempo", type="l", col = "#03D8FE")
+
+tiempo <- seq(1:nrow(data2))/240+2015.5
+
+plot(tiempo,data2[,1], ylab = "Cotización normalizada", xlab="años", type="l", col = "red", main ="Bitcoin y el Tether", cex.main=0.8, cex.lab = 0.8)
+lines(tiempo,data2[,12], ylab = "Tether", xlab="Tiempo", type="l", col = "skyblue")
+legend("topleft", legend=c("Bitcoin","Tether"), lty = 1, lwd = 2,cex = 0.8, col=c("red", "skyblue"), bty="n")
 
 
 ```
 
+### Datos normalizados de las acciones
 ```{r}
-##  [1] "#00008B" "#46008B" "green" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
+##  [1] "#00008B" "#46008B" "#8B008B" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
 ##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
-tiempo <- seq(1:nrow(data))/1506+2015.5
+tiempo <- seq(1:nrow(data2))/240+2015.5
 
-plot(tiempo,data[,2], ylab = "Bitcoin", xlab="Tiempo", type="l", col = "red")
-lines(tiempo,data[,3], ylab = "Ethereum", xlab="Tiempo", type="l", col = "#46008B")
-lines(tiempo,data[,14], ylab = "Tesla", xlab="Tiempo", type="l", col = "green")
-lines(tiempo,data[,15], ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B0046")
-lines(tiempo,data[,16], ylab = "Nvidia", xlab="Tiempo", type="l", col = "#8B4500")
-lines(tiempo,data[,18], ylab = "AMD", xlab="Tiempo", type="l", col = "#8B8B00")
+plot(tiempo,data2[,1], ylab = "Cotización normalizada", xlab="Año", type="l", col = "red", main ="Bitcoin y Acciones empresas tecnologicas", cex.main=0.8, cex.lab = 0.8)
+lines(tiempo,data2[,13], ylab = "Tesla", xlab="Tiempo", type="l", col = "green")
+lines(tiempo,data2[,14], ylab = "TSMC", xlab="Tiempo", type="l", col = "orange")
+lines(tiempo,data2[,15], ylab = "Nvidia", xlab="Tiempo", type="l", col = "pink")
+lines(tiempo,data2[,16], ylab = "Intel", xlab="Tiempo", type="l", col = "yellow")
+lines(tiempo,data2[,17], ylab = "AMD", xlab="Tiempo", type="l", col = "#03D8FE")
+lines(tiempo,data2[,18], ylab = "Qualcom", xlab="Tiempo", type="l", col = "brown")
 
-
-```
-## Visualización de Variables seleccionadas
-
-
-```{r}
-##  [1] "#00008B" "#46008B" "green" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
-##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
-tiempo <- seq(1:nrow(data))/1506+2015.5
-plot(tiempo,data2[,2], ylab = "Bitcoin", xlab="Tiempo", type="l", col = "red")
-lines(tiempo,data2[,3], ylab = "Ethereum", xlab="Tiempo", type="l", col = "#46008B")
-lines(tiempo,data2[,14], ylab = "Tesla", xlab="Tiempo", type="l", col = "green")
-lines(tiempo,data2[,15], ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B0046")
-lines(tiempo,data2[,16], ylab = "Nvidia", xlab="Tiempo", type="l", col = "#8B4500")
-lines(tiempo,data2[,17], ylab = "AMD", xlab="Tiempo", type="l", col = "#8B8B00")
+legend("topleft", legend=c("Bitcoin","Tesla","TSMC","Nvidia","Intel","AMD","Qualcom"), 
+       lty = 1, lwd = 2,cex = 0.8,
+       col=c("red","green","orange","pink","yellow","#03D8FE","brown"), bty="n")
 
 
 ```
@@ -117,22 +102,9 @@ head(d_est)
 
 ```
 
-```{r}
-#Se visualizan las series en su forma estacionaria.
-tiempo <- seq(1:nrow(d_est))/1505+2015.5 
-par(mfrow=c(2,3))
-plot(tiempo,d_est$bitcoin, ylab = "Bitcoin", xlab="Tiempo", type="l", col = "#00008B")
-plot(tiempo,d_est$ethereum, ylab = "Ethereum", xlab="Tiempo", type="l", col = "#46008B")
-plot(tiempo,d_est$tesla, ylab = "tesla", xlab="Tiempo", type="l", col = "green")
-plot(tiempo,d_est$tsmc, ylab = "TSMC", xlab="Tiempo", type="l", col = "#8B0046")
-plot(tiempo,d_est$nvidia, ylab = "Nvidia", xlab="Tiempo", type="l", col = "#8B4500")
-plot(tiempo,d_est$amd, ylab = "AMD", xlab="Tiempo", type="l", col = "#8B8B00")
-
-```
-
-
-
 ## Test de  causalidad de granger
+
+
 
 ### Analisis de cryptho monedas.
 ```{r}
@@ -288,17 +260,72 @@ for (i in 1:12){
 
 Tesla no causa al bitcoin
 
+### Variables seleccionadas
+
+2.  Bitcoin
+3.  Ethereum
+5.  Dogecoin
+11. Monero
+14. Tesla
+15. TSMC
+16. Nvidia
+
+## Visualización de los Variables seleccionadas junto al bitcoin.
+
+### Visualización de los Variables seleccionadas junto al bitcoin no normalizadas
+
+```{r}
+##  [1] "#00008B" "#46008B" "green" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
+##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
+tiempo <- seq(1:nrow(data))/240+2015.5
+par(mfrow=c(3,2))
+plot(tiempo,data[,3], ylab = "Ethereum", xlab="Tiempo", type="l", col = "blue")
+plot(tiempo,data[,5], ylab = "Dogecoin", xlab="Tiempo", type="l", col = "purple")
+plot(tiempo,data[,11], ylab = "Monero", xlab="Tiempo", type="l", col = "#03D8FE")
+plot(tiempo,data[,14], ylab = "Tesla", xlab="Tiempo", type="l", col = "red")
+plot(tiempo,data[,15], ylab = "TSMC", xlab="Tiempo", type="l", col = "orange")
+plot(tiempo,data[,16], ylab = "Nvidia", xlab="Tiempo", type="l", col = "green")
+
+
+```
+### Visualización de los Variables seleccionadas junto al bitcoin  normalizadas
+
+```{r}
+
+tiempo <- seq(1:nrow(data))/240+2015.5
+plot(tiempo,data2[,1], ylab = "Cotización normalizada", xlab="Año", type="l", col = "red", main="Datos seleccionados de las variables normalizadas",cex.main=0.8, cex.lab = 0.8)
+lines(tiempo,data2[,2], ylab = "Ethereum", xlab="Tiempo", type="l", col = "blue")
+lines(tiempo,data2[,4], ylab = "Dogecoin", xlab="Tiempo", type="l", col = "darkgreen")
+lines(tiempo,data2[,10], ylab = "Monero", xlab="Tiempo", type="l", col = "orange")
+lines(tiempo,data2[,13], ylab = "Tesla", xlab="Tiempo", type="l", col = "purple")
+lines(tiempo,data2[,14], ylab = "TSMC", xlab="Tiempo", type="l", col = "green")
+lines(tiempo,data2[,15], ylab = "Nvidia", xlab="Tiempo", type="l", col = "#03D8FE")
+legend("topleft", legend=c("Bitcoin","Ethereum","Dogecoin","Monero","Tesla","TSMC","Nvidia"), 
+       lty = 1, lwd = 2,cex = 0.8,
+       col=c("red","blue","darkgreen","orange","purple","green","#03D8FE","brown"), bty="n")
+
+```
+
+```{r}
+#Se visualizan las series en su forma estacionaria.
+tiempo <- seq(1:nrow(d_est))/240+2015.5 
+par(mfrow=c(3,4))
+plot(tiempo,d_est$bitcoin, ylab = "Bitcoin", xlab="año", type="l", col = "red")
+plot(tiempo,d_est$ethereum, ylab = "Ethereum", xlab="año", type="l", col = "blue")
+plot(tiempo,d_est$doge, ylab = "Dogecoin", xlab="año", type="l", col = "darkgreen")
+plot(tiempo,d_est$monero, ylab = "Monero", xlab="año", type="l", col = "orange")
+plot(tiempo,d_est$tesla, ylab = "tesla", xlab="año", type="l", col = "purple")
+plot(tiempo,d_est$tsmc, ylab = "TSMC", xlab="año", type="l", col = "green")
+plot(tiempo,d_est$nvidia, ylab = "Nvidia", xlab="año", type="l", col = "#03D8FE")
+
+
+```
+
 
 ## Calculo orden del modelo VAR
 
 ```{r}
-# 1.  Bitcoin
-# 2.  Ethereum
-# 4.  Dogecoin
-# 10. Monero
-# 13. Tesla
-# 14. TSMC
-# 15. Nvidia
+
 
 d_est2 <- d_est[-1:-34,c(1,2,4,10,13,14,15)]
 VARselect(d_est2, lag.max=12)
@@ -372,7 +399,7 @@ Como p-value < 0.05  la varianza de los residuales no es constante
 ```
 
 ```{r}
-var_irf <- irf(var_s, response = "ethereum",impulse = "bitcoin",n.ahead = 12, boot=T)
+var_irf <- irf(var_s, impulse = "bitcoin",n.ahead = 12, boot=T)
 var_irf 
 ```
 
