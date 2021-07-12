@@ -27,6 +27,9 @@ summary(pca)
 
 ```
 
+```{r}
+round(cor(data[,-1], method = "spearman"),3)
+```
 
 
 ```{r}
@@ -36,6 +39,16 @@ fviz_pca_var(pca,
              repel = TRUE     # Avoid text overlapping
              )
 ```
+```{r}
+round(pca$eig,3)
+```
+
+
+```{r}
+barplot(pca$eig[,2], main = "Porcentaje de la varianza por componente")
+```
+
+
 ```{r}
 library(MTS)
 library(vars)
@@ -47,6 +60,9 @@ head(data)
 ```
 
 ### Datos Año 2015-2027
+
+
+
 ```{r}
 data1 <- read.csv("2015_2.csv", header = T, sep =",")
 normalizada15 <- as.data.frame(lapply(data1[,-1], normalize))
@@ -75,6 +91,37 @@ lines(normalizada15[,7],col="yellow")
 cor(data1[,-1])
 ```
 
+```{r}
+library(urca)
+```
+
+
+Ho: Estacionaria, alpha < 0.463 al 5%, **NO** se rechaza Ho.
+Ha: No estacionaria, alpha > 0.463 al 5%, se rechaza Ho.
+```{r}
+lapply(data[,-1], ur.kpss)
+```
+```{r}
+library(aTSA)
+```
+
+
+### ADF test
+
+Ho. No estacionaria alpha > 0.05, **No** se rechaza Ho
+Ha. Estacionaria alpha < 0.05, Se rechaza Ho.
+
+```{r}
+lapply(data[,-1], adf.test, nlag = 5)
+```
+### Phillips Perrón
+
+Ho. No estacionaria alpha > 0.05, **No** se rechaza Ho
+Ha. Estacionaria alpha < 0.05, Se rechaza Ho.
+
+```{r}
+lapply(data[,-1], pp.test)
+```
 
 
 ### Datos Año 2017-2020

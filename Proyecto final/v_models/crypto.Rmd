@@ -272,7 +272,7 @@ Tesla no causa al bitcoin
 
 ## Visualización de los Variables seleccionadas junto al bitcoin.
 
-### Visualización de los Variables seleccionadas junto al bitcoin no normalizadas
+### Visualización de las Variables seleccionadas junto al bitcoin no normalizadas
 
 ```{r}
 ##  [1] "#00008B" "#46008B" "green" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
@@ -292,7 +292,7 @@ plot(tiempo,data[,16], ylab = "Nvidia", xlab="Tiempo", type="l", col = "green")
 
 ```{r}
 
-tiempo <- seq(1:nrow(data))/240+2015.5
+tiempo <- seq(1:nrow(data))/260+2015.5
 plot(tiempo,data2[,1], ylab = "Cotización normalizada", xlab="Año", type="l", col = "red", main="Datos seleccionados de las variables normalizadas",cex.main=0.8, cex.lab = 0.8)
 lines(tiempo,data2[,2], ylab = "Ethereum", xlab="Tiempo", type="l", col = "blue")
 lines(tiempo,data2[,4], ylab = "Dogecoin", xlab="Tiempo", type="l", col = "darkgreen")
@@ -351,11 +351,77 @@ Todas las raices del polinomio son menores a 1 por lo que nuestro proceso es est
 var_mts <- MTS::VAR(d_est2, p =1)
 summary(var_mts)
 ```
+```{r}
+library(xtable)
+```
+
+```{r}
+var_mts$cnst
+
+```
+### Estimates
+
+```{r}
+round(var_mts$coef[1,],3)
+```
+
+
+### Matriz AR(1)
+```{r}
+xtable(var_mts$Phi)
+```
+
+
 ## Refinamiento del modelo MTS
 
 ```{r}
 var_ref <- MTS::refVAR(var_mts,thres=0.8)
 ```
+
+$$
+\begin{bmatrix}
+z_1\\ 
+z_2\\ 
+z_3\\ 
+z_4\\ 
+z_5\\ 
+z_6\\ 
+z_7
+\end{bmatrix}
+=
+\begin{bmatrix}
+0.003\\ 
+0.005\\ 
+0.005\\ 
+0.004\\ 
+0.002\\ 
+0.001\\ 
+0.003
+\end{bmatrix}+\begin{bmatrix}
+-0.01 & -0.02 & -0.00 & 0.01 & -0.04 & 0.01 & 0.02 \\ 
+-0.16 & 0.10 & 0.00 & -0.03 & -0.06 & -0.00 & -0.02 \\ 
+-0.08 & 0.07 & 0.06 & -0.06 & -0.08 & -0.07 & 0.06 \\ 
+-0.11 & 0.05 & 0.04 & -0.06 & -0.13 & -0.03 & 0.14 \\ 
+0.01 & -0.01 & -0.01 & 0.02 & -0.01 & -0.09 & 0.05 \\ 
+0.00 & -0.01 & 0.00 & -0.00 & -0.00 & -0.15 & -0.02 \\ 
+0.00 & -0.00 & -0.01 & -0.01 & -0.03 & -0.16 & -0.04 \\ 
+\end{bmatrix} \begin{bmatrix}
+z_1,t-1\\ 
+z_2,t-1\\ 
+z_3,t-1\\ 
+z_4,t-1\\ 
+z_5,t-1\\ 
+z_6,t-1\\ 
+z_7,t-1
+\end{bmatrix} + \begin{bmatrix}
+a_{1t}\\ 
+a_{2t}\\ 
+a_{3t}\\ 
+a_{4t}\\ 
+a_{5t}\\ 
+a_{6t}\\ 
+a_{7t}
+\end{bmatrix}$$
 
 ## Prueba de autocorrelación serial
 
