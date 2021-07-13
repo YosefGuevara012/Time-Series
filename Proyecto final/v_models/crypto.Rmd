@@ -8,6 +8,7 @@ library(lmtest)
 library(vars)
 library(forecast)
 library(aTSA)
+library(xtable)
 ```
 
 ## Carga de los datos
@@ -36,7 +37,7 @@ head(data2)
 ```{r}
 ##  [1] "#00008B" "#46008B" "#8B008B" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
 ##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
-tiempo <- seq(1:nrow(data2))/240+2015.5
+tiempo <- seq(1:nrow(data2))/260+2015.5
 
 plot(tiempo,data2[,1], ylab = "Cotización normalizada", xlab="año", type="l", col = "red", main ="Bitcoin y otras crypto normalizadas", cex.main=0.8, cex.lab = 0.8)
 lines(tiempo,data2[,2], ylab = "Ethereum", xlab="Tiempo", type="l", col = "blue")
@@ -59,7 +60,7 @@ legend("topleft", legend=c("Bitcoin","Ethereum","Cardano","Dogecoin","Bcash","St
 
 ```{r}
 
-tiempo <- seq(1:nrow(data2))/240+2015.5
+tiempo <- seq(1:nrow(data2))/260+2015.5
 
 plot(tiempo,data2[,1], ylab = "Cotización normalizada", xlab="años", type="l", col = "red", main ="Bitcoin y el Tether", cex.main=0.8, cex.lab = 0.8)
 lines(tiempo,data2[,12], ylab = "Tether", xlab="Tiempo", type="l", col = "skyblue")
@@ -72,7 +73,7 @@ legend("topleft", legend=c("Bitcoin","Tether"), lty = 1, lwd = 2,cex = 0.8, col=
 ```{r}
 ##  [1] "#00008B" "#46008B" "#8B008B" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
 ##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
-tiempo <- seq(1:nrow(data2))/240+2015.5
+tiempo <- seq(1:nrow(data2))/260+2015.5
 
 plot(tiempo,data2[,1], ylab = "Cotización normalizada", xlab="Año", type="l", col = "red", main ="Bitcoin y Acciones empresas tecnologicas", cex.main=0.8, cex.lab = 0.8)
 lines(tiempo,data2[,13], ylab = "Tesla", xlab="Tiempo", type="l", col = "green")
@@ -277,7 +278,7 @@ Tesla no causa al bitcoin
 ```{r}
 ##  [1] "#00008B" "#46008B" "green" "#8B0046" "#8B0000" "#8B4500" "#8B8B00"
 ##  [8] "#468B00" "#008B00" "#008B45" "#008B8B" "#00468B"
-tiempo <- seq(1:nrow(data))/240+2015.5
+tiempo <- seq(1:nrow(data))/260+2015.5
 par(mfrow=c(3,2))
 plot(tiempo,data[,3], ylab = "Ethereum", xlab="Tiempo", type="l", col = "blue")
 plot(tiempo,data[,5], ylab = "Dogecoin", xlab="Tiempo", type="l", col = "purple")
@@ -308,7 +309,7 @@ legend("topleft", legend=c("Bitcoin","Ethereum","Dogecoin","Monero","Tesla","TSM
 
 ```{r}
 #Se visualizan las series en su forma estacionaria.
-tiempo <- seq(1:nrow(d_est))/240+2015.5 
+tiempo <- seq(1:nrow(d_est))/260+2015.5 
 par(mfrow=c(3,4))
 plot(tiempo,d_est$bitcoin, ylab = "Bitcoin", xlab="año", type="l", col = "red")
 plot(tiempo,d_est$ethereum, ylab = "Ethereum", xlab="año", type="l", col = "blue")
@@ -351,9 +352,7 @@ Todas las raices del polinomio son menores a 1 por lo que nuestro proceso es est
 var_mts <- MTS::VAR(d_est2, p =1)
 summary(var_mts)
 ```
-```{r}
-library(xtable)
-```
+
 
 ```{r}
 var_mts$cnst
@@ -371,11 +370,25 @@ round(var_mts$coef[1,],3)
 xtable(var_mts$Phi)
 ```
 
+### Matriz de covarianza
+
+```{r}
+xtable(var_mts$Sigma, digits = 4)
+```
+$${\sum}_a=\begin{bmatrix}
+0.0022 & 0.0019 & 0.0020 & 0.0020 & 0.0002 & 0.0001 & 0.0002 \\ 
+0.0019 & 0.0057 & 0.0026 & 0.0027 & 0.0002 & 0.0001 & 0.0003 \\ 
+0.0020 & 0.0026 & 0.0086 & 0.0023 & 0.0001 & 0.0001 & 0.0003 \\ 
+0.0020 & 0.0027 & 0.0023 & 0.0058 & 0.0002 & 0.0001 & 0.0002 \\ 
+0.0002 & 0.0002 & 0.0001 & 0.0002 & 0.0013 & 0.0002 & 0.0004 \\ 
+0.0001 & 0.0001 & 0.0001 & 0.0001 & 0.0002 & 0.0003 & 0.0003 \\ 
+0.0002 & 0.0003 & 0.0003 & 0.0002 & 0.0004 & 0.0003 & 0.0008 \\ 
+\end{bmatrix}$$
 
 ## Refinamiento del modelo MTS
 
 ```{r}
-var_ref <- MTS::refVAR(var_mts,thres=0.8)
+var_ref <- MTS::refVAR(var_mts,thres=1.8)
 ```
 
 $$
@@ -455,12 +468,12 @@ Como p-value < 0.05  la varianza de los residuales no es constante
 
 ```{r}
 
-#d_est$bitcoin <- ts(d_est$bitcoin, frequency =240, start = c(2015,100))
-#d_est$ethereum <- ts(d_est$ethereum, frequency =240, start = c(2015,100))
-#d_est$tesla <- ts(d_est$tesla, frequency =240, start = c(2015,100))
-#d_est$tsmc <- ts(d_est$tsmc, frequency =240, start = c(2015,100))
-#d_est$nvidia <- ts(d_est$nvidia, frequency =240, start = c(2015,100))
-#d_est$amd <- ts(d_est$amd, frequency =240, start = c(2015,100))
+#d_est$bitcoin <- ts(d_est$bitcoin, frequency =260, start = c(2015,100))
+#d_est$ethereum <- ts(d_est$ethereum, frequency =260, start = c(2015,100))
+#d_est$tesla <- ts(d_est$tesla, frequency =260, start = c(2015,100))
+#d_est$tsmc <- ts(d_est$tsmc, frequency =260, start = c(2015,100))
+#d_est$nvidia <- ts(d_est$nvidia, frequency =260, start = c(2015,100))
+#d_est$amd <- ts(d_est$amd, frequency =260, start = c(2015,100))
 
 ```
 
@@ -472,6 +485,14 @@ var_irf
 ```{r}
 plot(var_irf)
 ```
+```{r}
+VARirf(var_mts$Phi,var_mts$Sigma)
+
+```
+
+
+
+
 ### Descomposicion varianza
 
 ```{r}
@@ -479,12 +500,92 @@ var_des = fevd(var_s, n.ahead = 12)$bitcoin
 var_des
 ```
 ```{r}
-VARpred(var_mts,4)
+v.pred <- VARpred(var_mts,4)
 ```
+```{r}
+VARpred(var_ref,4)
+```
+
+
 ```{r}
 lapply(d_est2, sd)
 ```
 ```{r}
-predict(var_s, n.ahead = 4, ci = 0.95)
+vs_pred <- predict(var_s, n.ahead = 10, ci = 0.95)
+vs_pred
 ```
+
+
+
+## Datos logaritmicos
+```{r}
+x <- data[,-1]
+xl <- as.data.frame(lapply(x ,log))
+head(xl[-1:-34,])
+```
+
+### Datos diferenciados
+
+
+
+```{r}
+
+d <- as.data.frame(lapply(xl ,diff))
+d
+```
+
+
+
+```{r}
+BTC <- v.pred$pred
+BTC <- rbind(d_est2, BTC)
+tail(BTC)
+```
+
+
+
+
+```{r}
+Binv <- diffinv(BTC[,1], xi=5.577728)
+Binv
+```
+
+```{r}
+Be <- exp(Binv)
+tail(Be)
+```
+
+```{r}
+exp(xl)
+```
+## intervalos de confianza
+```{r}
+upper <- read.csv("upper.csv", header = T, sep=",")
+lower <- read.csv("lower.csv", header = T, sep=",")
+pred <- read.csv("pred.csv", header = T, sep=",")
+```
+
+### Intevalos Bitcoin
+
+
+```{r}
+Bpred <- exp(diffinv(pred[,1], xi=5.577728))
+Blower <- exp(diffinv(lower[,1], xi=5.577728))
+Bupper <- exp(diffinv(upper[,1], xi=5.577728))
+```
+
+```{r}
+
+tiempo <- seq(1:length(Bpred))/240+2015.5
+
+plot(tiempo[-1:-1300],Bpred[-1:-1300], type="l", col = "blue", cex.main=0.8, cex.lab = 0.8, main = "Grafico de con un IC del 95% para la predicción de la cotización del Bitcoin  ", ylab="Cotización en $USD", xlab="año")
+lines(tiempo[-1:-1300],Blower[-1:-1300], type="l", col = "red")
+lines(tiempo[-1:-1300],Bupper[-1:-1300], type="l", col = "green")
+lines(tiempo[-1:-1300],Bpred[-1:-1300], type="l", col = "blue")
+legend("topleft", legend=c("Predicción","Lower","Upper"), 
+       lty = 1, lwd = 2,cex = 0.8,
+       col=c("Blue","red","green"), bty="n")
+
+```
+
 
