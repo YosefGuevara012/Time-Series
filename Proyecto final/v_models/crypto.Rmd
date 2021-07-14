@@ -1,8 +1,8 @@
 ---
-output: html_notebook
+output: word_document
 ---
 
-```{r}
+```{r ECHO = F}
 library(MTS)
 library(lmtest)
 library(vars)
@@ -185,7 +185,7 @@ for (i in 1:12){
 
 for (i in 1:12){
   
-  gt <- grangertest(tesla ~ bitcoin, order = i, data = d_est)
+  gt <- grangertest(nvidia ~ tsmc, order = i, data = d_est)
   
   if(gt[2,4]<0.05){
     
@@ -310,18 +310,21 @@ legend("topleft", legend=c("Bitcoin","Ethereum","Dogecoin","Monero","Tesla","TSM
 ```{r}
 #Se visualizan las series en su forma estacionaria.
 tiempo <- seq(1:nrow(d_est))/260+2015.5 
-par(mfrow=c(3,4))
-plot(tiempo,d_est$bitcoin, ylab = "Bitcoin", xlab="año", type="l", col = "red")
+par(mfrow=c(3,2))
 plot(tiempo,d_est$ethereum, ylab = "Ethereum", xlab="año", type="l", col = "blue")
 plot(tiempo,d_est$doge, ylab = "Dogecoin", xlab="año", type="l", col = "darkgreen")
 plot(tiempo,d_est$monero, ylab = "Monero", xlab="año", type="l", col = "orange")
 plot(tiempo,d_est$tesla, ylab = "tesla", xlab="año", type="l", col = "purple")
 plot(tiempo,d_est$tsmc, ylab = "TSMC", xlab="año", type="l", col = "green")
 plot(tiempo,d_est$nvidia, ylab = "Nvidia", xlab="año", type="l", col = "#03D8FE")
+plot(tiempo,d_est$bitcoin, ylab = "Bitcoin", xlab="año", type="l", col = "red")
 
 
 ```
 
+```{r}
+plot(tiempo,d_est$bitcoin, ylab = "Bitcoin", xlab="año", type="l", col = "red")
+```
 
 ## Calculo orden del modelo VAR
 
@@ -341,6 +344,7 @@ var_s <- vars::VAR(d_est2,p =1)
 summary(var_s)
 ```
 Todas las raices del polinomio son menores a 1 por lo que nuestro proceso es estable
+
 
 ```{r}
 # plot(var_s)
@@ -391,50 +395,7 @@ $${\sum}_a=\begin{bmatrix}
 var_ref <- MTS::refVAR(var_mts,thres=1.8)
 ```
 
-$$
-\begin{bmatrix}
-z_1\\ 
-z_2\\ 
-z_3\\ 
-z_4\\ 
-z_5\\ 
-z_6\\ 
-z_7
-\end{bmatrix}
-=
-\begin{bmatrix}
-0.003\\ 
-0.005\\ 
-0.005\\ 
-0.004\\ 
-0.002\\ 
-0.001\\ 
-0.003
-\end{bmatrix}+\begin{bmatrix}
--0.01 & -0.02 & -0.00 & 0.01 & -0.04 & 0.01 & 0.02 \\ 
--0.16 & 0.10 & 0.00 & -0.03 & -0.06 & -0.00 & -0.02 \\ 
--0.08 & 0.07 & 0.06 & -0.06 & -0.08 & -0.07 & 0.06 \\ 
--0.11 & 0.05 & 0.04 & -0.06 & -0.13 & -0.03 & 0.14 \\ 
-0.01 & -0.01 & -0.01 & 0.02 & -0.01 & -0.09 & 0.05 \\ 
-0.00 & -0.01 & 0.00 & -0.00 & -0.00 & -0.15 & -0.02 \\ 
-0.00 & -0.00 & -0.01 & -0.01 & -0.03 & -0.16 & -0.04 \\ 
-\end{bmatrix} \begin{bmatrix}
-z_1,t-1\\ 
-z_2,t-1\\ 
-z_3,t-1\\ 
-z_4,t-1\\ 
-z_5,t-1\\ 
-z_6,t-1\\ 
-z_7,t-1
-\end{bmatrix} + \begin{bmatrix}
-a_{1t}\\ 
-a_{2t}\\ 
-a_{3t}\\ 
-a_{4t}\\ 
-a_{5t}\\ 
-a_{6t}\\ 
-a_{7t}
-\end{bmatrix}$$
+
 
 ## Prueba de autocorrelación serial
 
@@ -462,6 +423,10 @@ arch1$arch.mul
 ```
 Como p-value < 0.05  la varianza de los residuales no es constante
 
+```{r}
+Stability1 <- stability(var_s, type = "OLS-CUSUM")
+plot(Stability1 )
+```
 
 
 ## d_est con teporalidad
@@ -478,27 +443,26 @@ Como p-value < 0.05  la varianza de los residuales no es constante
 ```
 
 ```{r}
-var_irf <- irf(var_s, impulse = "bitcoin",n.ahead = 12, boot=T)
-var_irf 
+var_irf <- irf(var_s, impulse = "ethereum",n.ahead = 12, boot=T)
+ 
 ```
 
 ```{r}
 plot(var_irf)
 ```
-```{r}
-VARirf(var_mts$Phi,var_mts$Sigma)
-
-```
-
-
-
 
 ### Descomposicion varianza
 
 ```{r}
-var_des = fevd(var_s, n.ahead = 12)$bitcoin
+var_des = fevd(var_s, n.ahead = 10)
 var_des
 ```
+```{r}
+plot(var_des)
+```
+
+
+
 ```{r}
 v.pred <- VARpred(var_mts,4)
 ```
@@ -543,21 +507,6 @@ tail(BTC)
 ```
 
 
-
-
-```{r}
-Binv <- diffinv(BTC[,1], xi=5.577728)
-Binv
-```
-
-```{r}
-Be <- exp(Binv)
-tail(Be)
-```
-
-```{r}
-exp(xl)
-```
 ## intervalos de confianza
 ```{r}
 upper <- read.csv("upper.csv", header = T, sep=",")
@@ -565,7 +514,11 @@ lower <- read.csv("lower.csv", header = T, sep=",")
 pred <- read.csv("pred.csv", header = T, sep=",")
 ```
 
+
+
 ### Intevalos Bitcoin
+
+
 
 
 ```{r}
@@ -588,4 +541,36 @@ legend("topleft", legend=c("Predicción","Lower","Upper"),
 
 ```
 
+```{r}
+ICB <- rbind(tail(Bupper, n=4),tail(Blower, n=4))
+ICB
+```
 
+
+### Intevalos Ethereum
+
+
+```{r}
+Epred <- exp(diffinv(pred[,2], xi=-0.34467862))
+Elower <- exp(diffinv(lower[,2], xi=-0.34467862))
+Eupper <- exp(diffinv(upper[,2], xi=-0.34467862))
+```
+
+```{r}
+
+tiempo <- seq(1:length(Epred))/240+2015.5
+
+plot(tiempo[-1:-1300],Epred[-1:-1300], type="l", col = "blue", cex.main=0.8, cex.lab = 0.8, main = "Grafico de con un IC del 95% para la predicción de la cotización del Ethereum  ", ylab="Cotización en $USD", xlab="año")
+lines(tiempo[-1:-1300],Elower[-1:-1300], type="l", col = "red")
+lines(tiempo[-1:-1300],Eupper[-1:-1300], type="l", col = "green")
+lines(tiempo[-1:-1300],Epred[-1:-1300], type="l", col = "blue")
+legend("topleft", legend=c("Predicción","Lower","Upper"), 
+       lty = 1, lwd = 2,cex = 0.8,
+       col=c("Blue","red","green"), bty="n")
+
+```
+
+```{r}
+ECB <- rbind(tail(Eupper, n=4),tail(Elower, n=4))
+ECB
+```
