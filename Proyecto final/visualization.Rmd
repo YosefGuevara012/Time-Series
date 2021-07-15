@@ -9,6 +9,7 @@ library(factoextra)
 library(MTS)
 library(ggplot2)
 library(aTSA)
+library(xtable)
 ```
 ```{r}
 # funcion de normalización usando el rango
@@ -28,7 +29,14 @@ summary(pca)
 ```
 
 ```{r}
-round(cor(data[,-1], method = "spearman"),3)
+plot(pca, cex = 0.8, select = "contrib 5", title="Dim 1 vs Dim 2",habillage = "cos2")
+```
+
+
+```{r}
+correlation <- round(cor(data[,-1], method = "spearman"),3)
+correlation
+#xtable(correlation)
 ```
 
 
@@ -41,6 +49,7 @@ fviz_pca_var(pca,
 ```
 ```{r}
 round(pca$eig,3)
+#xtable(round(pca$eig,3))
 ```
 
 
@@ -153,7 +162,7 @@ MTSplot(data3[,2:7])
 ```{r}
 
 ## cluster
-res.hcpc <- HCPC(pca3, graph = F, min=4,max=6)
+res.hcpc <- HCPC(pca, graph = F, min=4,max=6)
 ```
 
 
